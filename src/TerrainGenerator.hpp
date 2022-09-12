@@ -26,13 +26,11 @@ class TerrainGenerator : public OGLApplication {
   float lastY = getHeight() / 2.0f;
   float yaw = 90.0f;
   float pitch = 0.0f;
-
-  void mouseMoved(GLFWwindow*, double, double);
-  
   float fov = 45.0;
 
  protected:
   virtual void loop();
+  virtual void mouseMoved(GLFWwindow*, double, double);
 
  private:
   const int size = 1024;
@@ -50,8 +48,6 @@ class TerrainGenerator : public OGLApplication {
   GLuint vao, vbo, ibo;
 
   void registerKeypressCallbacks();
-  void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-  float mouseSpeed = 0.01f;
 };
 
 #endif  // OPENGL_CMAKE_TERRAINGENERATOR

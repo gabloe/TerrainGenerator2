@@ -15,8 +15,10 @@
 
 using namespace std;
 
-const int initial_width=1024;
-const int initial_height=768;
+#define ENABLE_FULLSCREEN
+
+int initial_width=1920;
+int initial_height=1080;
 
 OGLApplication* currentApplication = NULL;
 
@@ -31,6 +33,12 @@ OGLApplication& OGLApplication::getInstance() {
 OGLApplication::OGLApplication()
     : state(stateReady), width(initial_width), height(initial_height), title("Terrain Generator") {
   currentApplication = this;
+
+  #ifdef ENABLE_FULLSCREEN
+  GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+  #else
+  GLFWmonitor* primaryMonitor = NULL;
+  #endif
 
   cout << "[Info] GLFW initialisation" << endl;
 
@@ -48,7 +56,7 @@ OGLApplication::OGLApplication()
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // create the window
-  window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+  window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
   if (!window) {
     glfwTerminate();
     throw std::runtime_error("Couldn't create a window");
