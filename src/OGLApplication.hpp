@@ -1,19 +1,20 @@
 /**
- * Application.cpp
+ * OGLApplication.cpp
  * Contributors:
  *      * Arthur Sonzogni (author)
  * Licence:
  *      * MIT
  */
 
-#ifndef OPENGL_CMAKE_SKELETON_APPLICATION_HPP
-#define OPENGL_CMAKE_SKELETON_APPLICATION_HPP
+#ifndef OPENGL_CMAKE_SKELETON_OGLAPPLICATION_HPP
+#define OPENGL_CMAKE_SKELETON_OGLAPPLICATION_HPP
 
 #include <string>
+#include <map>
 
 struct GLFWwindow;
 
-/// Application class:
+/// OGLApplication class:
 /// * init OpenGL
 /// * provide:
 ///   * getWidth()
@@ -22,11 +23,11 @@ struct GLFWwindow;
 ///   * getWindowRatio()
 ///   * windowDimensionChanged()
 /// * let the user define the "loop" function.
-class Application {
+class OGLApplication {
  public:
-  Application();
+  OGLApplication();
 
-  static Application& getInstance();
+  static OGLApplication& getInstance();
 
   // get the window id
   GLFWwindow* getWindow() const;
@@ -38,22 +39,26 @@ class Application {
   float getFrameDeltaTime() const;
   float getTime() const;
 
-  // application run
+  // OGLApplication run
   void run();
 
-  // Application informations
-  //
+  // OGLApplication informations
   int getWidth();
   int getHeight();
   float getWindowRatio();
   bool windowDimensionChanged();
+  void registerKeypressCallback(int, std::function<void()>);
+  std::map<int, std::function<void()>> keypressCallbacks;
+
+  // Movement speed
+  float speed = 0.1f;
 
  private:
   enum State { stateReady, stateRun, stateExit };
 
   State state;
 
-  Application& operator=(const Application&) { return *this; }
+  OGLApplication& operator=(const OGLApplication&) { return *this; }
 
   GLFWwindow* window;
 
@@ -68,11 +73,13 @@ class Application {
   void detectWindowDimensionChange();
 
  protected:
-  Application(const Application&){};
+  OGLApplication(const OGLApplication&){};
 
   std::string title;
 
   virtual void loop();
+  virtual void mouseMoved(GLFWwindow*, double, double);
+
 };
 
-#endif /* end of include guard: OPENGL_CMAKE_SKELETON_APPLICATION_HPP */
+#endif /* end of include guard: OPENGL_CMAKE_SKELETON_OGLApplication_HPP */

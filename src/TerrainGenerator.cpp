@@ -1,11 +1,13 @@
 /**
- * MyApplication.cpp
+ * TerrainGenerator.cpp
  * Contributors:
+ *      * Gabriel Loewen
  *      * Arthur Sonzogni (author)
  * Licence:
  *      * MIT
  */
-#include "MyApplication.hpp"
+
+#include "TerrainGenerator.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -44,8 +46,8 @@ VertexType getHeightMap(const glm::vec2 position) {
   return v;
 }
 
-MyApplication::MyApplication()
-    : Application(),
+TerrainGenerator::TerrainGenerator()
+    : OGLApplication(),
       vertexShader(SHADER_DIR "/shader.vert", GL_VERTEX_SHADER),
       fragmentShader(SHADER_DIR "/shader.frag", GL_FRAGMENT_SHADER),
       shaderProgram({vertexShader, fragmentShader}) {
@@ -112,23 +114,65 @@ MyApplication::MyApplication()
 
   // vao end
   glBindVertexArray(0);
+
+  registerKeypressCallbacks();
+
+  // setup the camera
+  cameraPos = glm::vec3(0.0, 0.0, 3.0);
+  cameraFront = glm::vec3(0.0f, -1.0f, 0.0f);
+  cameraUp    = glm::vec3(0.0f, 0.0f,  1.0f);
+  cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+  cameraDirection = glm::normalize(cameraPos - cameraTarget);
 }
 
-void MyApplication::loop() {
+void TerrainGenerator::registerKeypressCallbacks() {
+  // register key press callbacks
+  registerKeypressCallback(GLFW_KEY_W, std::function<void()>([&]() {
+    cameraPos += cameraFront * speed;
+  }));
+
+  registerKeypressCallback(GLFW_KEY_S, std::function<void()>([&]() { 
+    cameraPos -= cameraFront * speed;
+  }));
+
+  registerKeypressCallback(GLFW_KEY_A, std::function<void()>([&]() { 
+    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+  }));
+
+  registerKeypressCallback(GLFW_KEY_D, std::function<void()>([&]() { 
+    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+  }));
+
+  registerKeypressCallback(GLFW_KEY_ESCAPE, std::function<void()>([&]() { 
+    glfwSetWindowShouldClose(getWindow(), GL_TRUE);
+  }));
+}
+
+void TerrainGenerator::loop() {
   // exit on window close button pressed
   if (glfwWindowShouldClose(getWindow()))
     exit();
 
-  float t = getTime();
+  double mouse_x,mouse_y;
+
+	glfwGetCursorPos(getWindow(), &mouse_x, &mouse_y);
+
   // set matrix : projection + view
-  projection = glm::perspective(float(2.0 * atan(getHeight() / 1920.f)),
-                                getWindowRatio(), 0.1f, 100.f);
-  view = glm::lookAt(glm::vec3(20.0 * sin(t), 20.0 * cos(t), 20.0),
-                     glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+  projection = glm::perspective(glm::radians(fov), getWindowRatio(), 0.1f, 100.0f);  
+
+  // glm::lookAt(eye, center, up)
+  view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+  // fire all the applicable keypress callbacks
+  for (std::map<int, std::function<void()>>::iterator it = keypressCallbacks.begin(); it != keypressCallbacks.end(); it++) {
+    if (glfwGetKey(getWindow(), it->first) != GLFW_RELEASE) {
+      it->second();
+    }
+  }
 
   // clear
   glClear(GL_COLOR_BUFFER_BIT);
-  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   shaderProgram.use();
@@ -154,4 +198,38 @@ void MyApplication::loop() {
   glBindVertexArray(0);
 
   shaderProgram.unuse();
+}
+
+void TerrainGenerator::mouseMoved(GLFWwindow * window, double x, double y) {
+  float xpos = static_cast<float>(x);
+  float ypos = static_cast<float>(y);
+  if (firstMouse)
+  {
+      lastX = xpos;
+      lastY = ypos;
+      firstMouse = false;
+  }
+
+  float xoffset = xpos - lastX;
+  float yoffset = lastY - ypos; 
+  lastX = xpos;
+  lastY = ypos;
+
+  float sensitivity = 0.1f;
+  xoffset *= sensitivity;
+  yoffset *= sensitivity;
+
+  yaw   += xoffset;
+  pitch += yoffset;
+
+  if(pitch > 89.0f)
+      pitch = 89.0f;
+  if(pitch < -89.0f)
+      pitch = -89.0f;
+
+  glm::vec3 direction;
+  direction.x = cos(glm::radians(yaw)) * -cos(glm::radians(pitch));
+  direction.z = sin(glm::radians(pitch));
+  direction.y = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  cameraFront = glm::normalize(direction);
 }

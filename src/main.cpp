@@ -6,10 +6,10 @@
  *      * MIT
  */
 
-#include "MyApplication.hpp"
+#include "TerrainGenerator.hpp"
 
 int main(int argc, const char* argv[]) {
-  MyApplication app;
+  TerrainGenerator app;
   app.run();
   return 0;
 }

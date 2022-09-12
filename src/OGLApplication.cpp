@@ -1,12 +1,12 @@
 /**
- * Application.hpp
+ * OGLApplication.cpp
  * Contributors:
  *      * Arthur Sonzogni (author)
  * Licence:
  *      * MIT
  */
 
-#include "Application.hpp"
+#include "OGLApplication.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -15,17 +15,21 @@
 
 using namespace std;
 
-Application* currentApplication = NULL;
+const int initial_width=1024;
+const int initial_height=768;
 
-Application& Application::getInstance() {
+OGLApplication* currentApplication = NULL;
+
+OGLApplication& OGLApplication::getInstance() {
   if (currentApplication)
     return *currentApplication;
   else
     throw std::runtime_error("There is no current Application");
 }
 
-Application::Application()
-    : state(stateReady), width(640), height(480), title("Application") {
+
+OGLApplication::OGLApplication()
+    : state(stateReady), width(initial_width), height(initial_height), title("Terrain Generator") {
   currentApplication = this;
 
   cout << "[Info] GLFW initialisation" << endl;
@@ -70,28 +74,35 @@ Application::Application()
   // opengl configuration
   glEnable(GL_DEPTH_TEST);  // enable depth-testing
   glDepthFunc(GL_LESS);  // depth-testing interprets a smaller value as "closer"
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  
+  // setup mouse event listeners
+  glfwSetWindowUserPointer(window, this);
+  glfwSetCursorPosCallback(window, +[](GLFWwindow* win, double x, double y){
+    static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))->mouseMoved(win, x, y);
+  });
 
   // vsync
   // glfwSwapInterval(false);
 }
 
-GLFWwindow* Application::getWindow() const {
+GLFWwindow* OGLApplication::getWindow() const {
   return window;
 }
 
-void Application::exit() {
+void OGLApplication::exit() {
   state = stateExit;
 }
 
-float Application::getFrameDeltaTime() const {
+float OGLApplication::getFrameDeltaTime() const {
   return deltaTime;
 }
 
-float Application::getTime() const {
+float OGLApplication::getTime() const {
   return time;
 }
 
-void Application::run() {
+void OGLApplication::run() {
   state = stateRun;
 
   // Make the window's context current
@@ -121,33 +132,41 @@ void Application::run() {
   glfwTerminate();
 }
 
-void Application::detectWindowDimensionChange() {
+void OGLApplication::detectWindowDimensionChange() {
   int w, h;
   glfwGetWindowSize(getWindow(), &w, &h);
   dimensionChanged = (w != width || h != height);
   if (dimensionChanged) {
     width = w;
     height = h;
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, 2*w, 2*h);
   }
 }
 
-void Application::loop() {
+void OGLApplication::loop() {
   cout << "[INFO] : loop" << endl;
 }
 
-int Application::getWidth() {
+void OGLApplication::registerKeypressCallback(int key, std::function<void()> callback) {
+  keypressCallbacks.insert(std::make_pair(key, callback));
+}
+
+int OGLApplication::getWidth() {
   return width;
 }
 
-int Application::getHeight() {
+int OGLApplication::getHeight() {
   return height;
 }
 
-float Application::getWindowRatio() {
+float OGLApplication::getWindowRatio() {
   return float(width) / float(height);
 }
 
-bool Application::windowDimensionChanged() {
+bool OGLApplication::windowDimensionChanged() {
   return dimensionChanged;
+}
+
+void OGLApplication::mouseMoved(GLFWwindow * window, double x, double y) {
+    cout << "[INFO] : mouseMoved to <" << x << "," << y << ">" << endl;
 }
