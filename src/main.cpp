@@ -1,7 +1,7 @@
 /**
  * Main.cpp skeleton
  * Contributors:
- *      * Arthur Sonzogni
+ *      * Gabriel Loewen
  * Licence:
  *      * MIT
  */

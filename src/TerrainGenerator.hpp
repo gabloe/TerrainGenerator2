@@ -2,7 +2,6 @@
  * TerrainGenerator.hpp
  * Contributors:
  *      * Gabriel Loewen
- *      * Arthur Sonzogni
  * Licence:
  *      * MIT
  */

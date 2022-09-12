@@ -2,7 +2,6 @@
  * TerrainGenerator.cpp
  * Contributors:
  *      * Gabriel Loewen
- *      * Arthur Sonzogni (author)
  * Licence:
  *      * MIT
  */

@@ -1,7 +1,7 @@
 /**
  * OGLApplication.cpp
  * Contributors:
- *      * Arthur Sonzogni (author)
+ *      * Gabriel Loewen
  * Licence:
  *      * MIT
  */
