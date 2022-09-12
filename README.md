@@ -7,8 +7,18 @@ Creates procedurially generated terrain, and supports FPS style movement around 
 
 ![demo](demo.gif)
 
-initialization:
----------------
+goals :
+1. Use Perlin noise to generate the terrain mesh
+   * Must include valleys and peaks
+2. Add dynamic lighting with multiple light sources
+3. Dynamic terrain expansion based on global position of camera
+4. Dynamic textures based on heightmap
+   * E.g. maybe tall peaks have ice at the top, valleys might be grassy, etc...
+5. Proper physics engine
+6. Fluid dynamics
+
+initialization :
+----------------
 ```bash
 git submodule init
 git submodule update
