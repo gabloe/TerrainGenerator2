@@ -1,66 +1,45 @@
-OpenGL CMake Skeleton [![Build Status](https://travis-ci.org/ArthurSonzogni/OpenGL_CMake_Skeleton.svg?branch=master)](https://travis-ci.org/ArthurSonzogni/OpenGL_CMake_Skeleton)
+TerrainGenerator
 =======================
 
-A ready to use C++11 CMake OpenGL skeleton using **GLFW**, **Glew** and **glm**. (use git submodules)
+Built from the [OpenGL CMake Skeleton](https://github.com/ArthurSonzogni/OpenGL_CMake_Skeleton) template
 
-It compiles on:
- * **WebAssembly**  (on branch webassembly. See instruction below)
- * Linux
- * Windows
- * Mac
+Creates procedurially generated terrain, and supports FPS style movement around the terrain.
 
-It can compile for the Web with WebAssembly thanks to emscripten, as well as on
-Linux, Windows and Mac.
+![demo](demo.gif)
 
-Shader class and example Application are included.
-
-![output result](output.gif)
-
-I am open to any comments and contributions.
-
-Clone (With submodules):
-========================
-
-```
-git clone --recursive git@github.com:ArthurSonzogni/OpenGL_CMake_Skeleton.git
-```
-
-Alternatively, if you don't used the --recursive option, you can type:
+initialization:
+---------------
 ```bash
 git submodule init
 git submodule update
 ```
 
-usage (WebAssembly) : 
----------------------
-Switch to the webassembly branch
-```
-git checkout webassembly
-```
-
-Install emscripten, then
+usage (macos) : 
+---------------
+Install necessary tools and libraries with homebrew
 ```bash
-mkdir build_emscripten
-cd build_emscripten
-CC=emcc CXX=em++ cmake ..
-make
-python -m SimpleHTTPServer 8000
+brew install llvm cmake
 ```
 
-Now, visit [http://localhost:8000](http://localhost:8000)
+Open a terminal in the root of the repo
+```bash
+chmod a+x build.sh
+./build.sh
+./build/terrain-generator
+```
 
 usage (Linux) : 
 ---------------
-Some standard library to install:
+Some standard libraries to install:
 ```bash
 sudo apt-get install cmake libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+```
 
 Open the directory into a terminal
 ```bash
-mkdir build
-cd build
-cmake ..
-./main
+chmod a+x build.sh
+./build.sh
+./build/terrain-generator
 ```
 
 usage (Windows) :
