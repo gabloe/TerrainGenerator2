@@ -31,9 +31,13 @@ class TerrainGenerator : public OGLApplication {
  protected:
   virtual void loop();
   virtual void mouseMoved(GLFWwindow*, double, double);
+  virtual void handleKeyboardEvent(GLFWwindow*, int, int, int, int);
 
  private:
   const int size = 1024;
+
+  // Movement speed
+  float speed = 0.1f;
 
   // shader
   Shader vertexShader;
@@ -47,7 +51,12 @@ class TerrainGenerator : public OGLApplication {
   // VBO/VAO/ibo
   GLuint vao, vbo, ibo;
 
-  void registerKeypressCallbacks();
+  // polygon representation
+  GLenum polygonModes[2] = { GL_FILL, GL_LINE };
+  int polygonMode = 0;
+
+  // input handling
+  void processInput(GLFWwindow *);
 };
 
 #endif  // OPENGL_CMAKE_TERRAINGENERATOR

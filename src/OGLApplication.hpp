@@ -11,7 +11,12 @@
 
 #include <string>
 #include <map>
+#include <array>
 #include <functional>
+
+// OGL imports
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 struct GLFWwindow;
 
@@ -43,35 +48,37 @@ class OGLApplication {
   // OGLApplication run
   void run();
 
-  // OGLApplication informations
+  // OGLApplication information
   int getWidth();
   int getHeight();
   float getWindowRatio();
-  bool windowDimensionChanged();
-  void registerKeypressCallback(int, std::function<void()>);
-  std::map<int, std::function<void()>> keypressCallbacks;
-
-  // Movement speed
-  float speed = 0.1f;
+  bool isFullScreen();
+  void setFullScreen(bool);
+  void windowSizeChanged(GLFWwindow*, int, int);
 
  private:
   enum State { stateReady, stateRun, stateExit };
 
-  State state;
+  State _state;
 
   OGLApplication& operator=(const OGLApplication&) { return *this; }
 
-  GLFWwindow* window;
+  GLFWwindow* _window;
 
   // Time:
-  float time;
-  float deltaTime;
+  float _time;
+  float _deltaTime;
 
   // Dimensions:
-  int width;
-  int height;
-  bool dimensionChanged;
-  void detectWindowDimensionChange();
+  int _width, _height;
+  std::array<int, 2> _windowPosition  {0, 0};
+  std::array<int, 2> _windowSize      {0, 0};
+  std::array<int, 2> _viewportSize    {0, 0};
+
+  // Screen
+  GLFWmonitor* _primaryMonitor = NULL;
+  void _resize(int, int);
+  bool _updateViewport = true;
 
  protected:
   OGLApplication(const OGLApplication&){};
@@ -80,7 +87,7 @@ class OGLApplication {
 
   virtual void loop();
   virtual void mouseMoved(GLFWwindow*, double, double);
-
+  virtual void handleKeyboardEvent(GLFWwindow*, int, int, int, int);
 };
 
 #endif /* end of include guard: OPENGL_CMAKE_SKELETON_OGLApplication_HPP */

@@ -114,8 +114,6 @@ TerrainGenerator::TerrainGenerator()
   // vao end
   glBindVertexArray(0);
 
-  registerKeypressCallbacks();
-
   // setup the camera
   cameraPos = glm::vec3(0.0, 0.0, 3.0);
   cameraFront = glm::vec3(0.0f, -1.0f, 0.0f);
@@ -124,50 +122,18 @@ TerrainGenerator::TerrainGenerator()
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
 }
 
-void TerrainGenerator::registerKeypressCallbacks() {
-  // register key press callbacks
-  registerKeypressCallback(GLFW_KEY_W, std::function<void()>([&]() {
-    cameraPos += cameraFront * speed;
-  }));
-
-  registerKeypressCallback(GLFW_KEY_S, std::function<void()>([&]() { 
-    cameraPos -= cameraFront * speed;
-  }));
-
-  registerKeypressCallback(GLFW_KEY_A, std::function<void()>([&]() { 
-    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
-  }));
-
-  registerKeypressCallback(GLFW_KEY_D, std::function<void()>([&]() { 
-    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
-  }));
-
-  registerKeypressCallback(GLFW_KEY_ESCAPE, std::function<void()>([&]() { 
-    exit();
-  }));
-}
-
 void TerrainGenerator::loop() {
   // exit on window close button pressed
   if (glfwWindowShouldClose(getWindow()))
     exit();
 
-  double mouse_x,mouse_y;
-
-	glfwGetCursorPos(getWindow(), &mouse_x, &mouse_y);
+  processInput(getWindow());
 
   // set matrix : projection + view
   projection = glm::perspective(glm::radians(fov), getWindowRatio(), 0.1f, 100.0f);  
 
   // glm::lookAt(eye, center, up)
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-  // fire all the applicable keypress callbacks
-  for (std::map<int, std::function<void()>>::iterator it = keypressCallbacks.begin(); it != keypressCallbacks.end(); it++) {
-    if (glfwGetKey(getWindow(), it->first) != GLFW_RELEASE) {
-      it->second();
-    }
-  }
 
   // clear
   glClear(GL_COLOR_BUFFER_BIT);
@@ -231,4 +197,32 @@ void TerrainGenerator::mouseMoved(GLFWwindow * window, double x, double y) {
   direction.z = sin(glm::radians(pitch));
   direction.y = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
   cameraFront = glm::normalize(direction);
+}
+
+void TerrainGenerator::handleKeyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+    setFullScreen(!isFullScreen());
+  }
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    exit();
+  }
+  if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+    polygonMode = (polygonMode + 1) % 2;
+    glPolygonMode(GL_FRONT_AND_BACK, polygonModes[polygonMode]);
+  }
+}
+
+void TerrainGenerator::processInput(GLFWwindow* window) {
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    cameraPos += cameraFront * speed;
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    cameraPos -= cameraFront * speed;
+  }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+  }
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * speed;
+  }
 }
