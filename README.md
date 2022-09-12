@@ -1,6 +1,8 @@
 TerrainGenerator
 =======================
 
+[![Build Status](https://app.travis-ci.com/gabloe/TerrainGenerator2.svg?branch=main)](https://app.travis-ci.com/gabloe/TerrainGenerator2)
+
 Built from the [OpenGL CMake Skeleton](https://github.com/ArthurSonzogni/OpenGL_CMake_Skeleton) template
 
 Creates procedurially generated terrain, and supports FPS style movement around the terrain.
