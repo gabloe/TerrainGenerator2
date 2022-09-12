@@ -13,8 +13,8 @@
 
 using namespace std;
 
-int r_width=1024;
-int r_height=768;
+int r_width=1920;
+int r_height=1080;
 
 OGLApplication* currentApplication = NULL;
 

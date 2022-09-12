@@ -130,7 +130,7 @@ void TerrainGenerator::loop() {
   processInput(getWindow());
 
   // set matrix : projection + view
-  projection = glm::perspective(glm::radians(fov), getWindowRatio(), 0.1f, 100.0f);  
+  projection = glm::perspective(glm::radians(fov), getWindowRatio(), znear, zfar);  
 
   // glm::lookAt(eye, center, up)
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -141,8 +141,12 @@ void TerrainGenerator::loop() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   shaderProgram.use();
+  
+  glm::mat4 model;
 
   // send uniforms
+  shaderProgram.setUniform("camera", cameraPos);
+  shaderProgram.setUniform("model", model);
   shaderProgram.setUniform("projection", projection);
   shaderProgram.setUniform("view", view);
 

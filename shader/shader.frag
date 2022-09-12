@@ -1,5 +1,6 @@
-#version 150
+#version 330 core
 
+in vec3 cameraPos;
 in vec4 fPosition;
 in vec4 fColor;
 in vec4 fLightPosition;
@@ -8,18 +9,30 @@ in vec3 fNormal;
 // output
 out vec4 color;
 
+// white light
+vec3 lightColor = vec3(1.0, 1.0, 1.0);
+
 void main(void)
-{       
-    vec3 o =-normalize(fPosition.xyz);
-    vec3 n = normalize(fNormal);
-    vec3 r = reflect(o,n);
-    vec3 l = normalize(fLightPosition.xyz-fPosition.xyz);
+{   
+    // Ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
 
-    float ambient = 0.1;
-    float diffus = 0.7*max(0.0,dot(n,l));
-    float specular = 0.6*pow(max(0.0,-dot(r,l)),4.0);
+    // Diffuse
+    vec3 norm = normalize(fNormal);
+    vec3 lightDir = -normalize(fLightPosition.xyz + fPosition.xyz);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
 
-    color = fColor * ( ambient + diffus + specular );
+    // Specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(cameraPos - fPosition.xyz);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;     
 
-	/*color = vec3(1,0,0);*/
+    // Result
+    vec4 result = vec4(ambient + diffuse + specular, 1.0) * fColor;
+
+    color = result;
 }
