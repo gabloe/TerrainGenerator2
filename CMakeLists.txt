@@ -14,6 +14,7 @@ include_directories(src/includes lib/stb)
 file(GLOB terrain-generator-code
      "src/*.hpp"
      "src/*.cpp"
+     "src/**/*.cpp"
 )
 
 # The main executable
