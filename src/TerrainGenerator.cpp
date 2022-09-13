@@ -25,7 +25,8 @@ struct VertexType {
 };
 
 float heightMap(const glm::vec2 position) {
-  return 2.0 * sin(position.x) * sin(position.y);
+  auto radius = 10 * sqrt(position.x * position.x + position.y * position.y);
+  return 2.0 * cos(radius) * cos(radius);
 }
 
 VertexType getHeightMap(const glm::vec2 position) {
