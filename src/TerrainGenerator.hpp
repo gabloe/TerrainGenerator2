@@ -17,7 +17,6 @@
 class TerrainGenerator : public OGLApplication {
  public:
   TerrainGenerator();
-  
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
   glm::vec3 cameraUp;
@@ -61,11 +60,11 @@ class TerrainGenerator : public OGLApplication {
   GLuint vao, vbo, ibo;
 
   // polygon representation
-  GLenum polygonModes[2] = { GL_FILL, GL_LINE };
+  GLenum polygonModes[2] = {GL_FILL, GL_LINE};
   int polygonMode = 0;
 
   // input handling
-  void processInput(GLFWwindow *);
+  void processInput(GLFWwindow*);
 
   void Generate();
 };

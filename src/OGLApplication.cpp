@@ -13,8 +13,8 @@
 
 using namespace std;
 
-int r_width=1600;
-int r_height=900;
+int r_width = 1600;
+int r_height = 900;
 
 OGLApplication* currentApplication = NULL;
 
@@ -30,7 +30,6 @@ OGLApplication::OGLApplication()
   currentApplication = this;
 
   cout << "[Info] GLFW initialisation" << endl;
-
   // initialize the GLFW library
   if (!glfwInit()) {
     throw std::runtime_error("Couldn't init GLFW");
@@ -53,13 +52,11 @@ OGLApplication::OGLApplication()
 
   glfwMakeContextCurrent(_window);
 
-  glewExperimental = GL_TRUE;
-  GLenum err = glewInit();
+  cout << "[Info] GLAD initialisation" << endl;
 
-  if (err != GLEW_OK) {
-    glfwTerminate();
-    throw std::runtime_error(string("Could initialize GLEW, error = ") +
-                             (const char*)glewGetErrorString(err));
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cout << "Could not load GLAD" << std::endl;
+    throw std::runtime_error("Couldn't init GLAD");
   }
 
   // get version info
@@ -72,22 +69,30 @@ OGLApplication::OGLApplication()
   glEnable(GL_DEPTH_TEST);  // enable depth-testing
   glDepthFunc(GL_LESS);  // depth-testing interprets a smaller value as "closer"
   glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-  
-  // set the window user pointer to this instance so that we can reference members in OGL callbacks
+
+  // set the window user pointer to this instance so that we can reference
+  // members in OGL callbacks
   glfwSetWindowUserPointer(_window, this);
 
   // setup mouse event listeners
-  glfwSetCursorPosCallback(_window, +[](GLFWwindow* win, double x, double y){
-    static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))->mouseMoved(win, x, y);
-  });
-  glfwSetWindowSizeCallback(_window, +[](GLFWwindow* win, int cx, int cy){
-    static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))->windowSizeChanged(win, cx, cy);
-  });
+  glfwSetCursorPosCallback(
+      _window, +[](GLFWwindow* win, double x, double y) {
+        static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))
+            ->mouseMoved(win, x, y);
+      });
+  glfwSetWindowSizeCallback(
+      _window, +[](GLFWwindow* win, int cx, int cy) {
+        static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))
+            ->windowSizeChanged(win, cx, cy);
+      });
 
   // setup keyboard event listener
-  glfwSetKeyCallback(_window, +[](GLFWwindow* win, int key, int scancode, int action, int mods){
-    static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))->handleKeyboardEvent(win, key, scancode, action, mods);
-  });
+  glfwSetKeyCallback(
+      _window,
+      +[](GLFWwindow* win, int key, int scancode, int action, int mods) {
+        static_cast<OGLApplication*>(glfwGetWindowUserPointer(win))
+            ->handleKeyboardEvent(win, key, scancode, action, mods);
+      });
 
   // setup monitor
   _primaryMonitor = glfwGetPrimaryMonitor();
@@ -106,7 +111,12 @@ void OGLApplication::_enumerate_video_modes(GLFWmonitor* monitor) {
 
   std::cout << "[INFO] Start enumerating video modes" << std::endl;
   for (int i = _video_mode_count - 1; i >= 0; --i) {
-    std::cout << _video_modes[i].width << " x " << _video_modes[i].height << ", " << _video_modes[i].redBits + _video_modes[i].blueBits + _video_modes[i].greenBits << " bit color, " << _video_modes[i].refreshRate << " hz" << std::endl;
+    std::cout << _video_modes[i].width << " x " << _video_modes[i].height
+              << ", "
+              << _video_modes[i].redBits + _video_modes[i].blueBits +
+                     _video_modes[i].greenBits
+              << " bit color, " << _video_modes[i].refreshRate << " hz"
+              << std::endl;
   }
   std::cout << "[INFO] End enumerating video modes" << std::endl;
 }
@@ -161,14 +171,14 @@ void OGLApplication::run() {
 }
 
 void OGLApplication::windowSizeChanged(GLFWwindow* window, int cx, int cy) {
-  void *ptr = glfwGetWindowUserPointer(window);
-  if (OGLApplication *wndPtr = static_cast<OGLApplication*>(ptr)) {
+  void* ptr = glfwGetWindowUserPointer(window);
+  if (OGLApplication* wndPtr = static_cast<OGLApplication*>(ptr)) {
     wndPtr->_resize(cx, cy);
   }
 }
 
 void OGLApplication::_resize(int cx, int cy) {
-    _updateViewport = true;
+  _updateViewport = true;
 }
 
 bool OGLApplication::isFullScreen() {
@@ -186,13 +196,15 @@ void OGLApplication::setFullScreen(bool fullscreen) {
     glfwGetWindowSize(_window, &_windowSize[0], &_windowSize[1]);
 
     // Use the highest resolution possible
-    const GLFWvidmode mode = _video_modes[_video_mode_count-1];
+    const GLFWvidmode mode = _video_modes[_video_mode_count - 1];
 
     // switch to full screen
-    glfwSetWindowMonitor(_window, _primaryMonitor, 0, 0, mode.width, mode.height, 0);
+    glfwSetWindowMonitor(_window, _primaryMonitor, 0, 0, mode.width,
+                         mode.height, 0);
   } else {
     // restore last window size and position
-    glfwSetWindowMonitor(_window, NULL, _windowPosition[0], _windowPosition[1], _windowSize[0], _windowSize[1], 0);
+    glfwSetWindowMonitor(_window, NULL, _windowPosition[0], _windowPosition[1],
+                         _windowSize[0], _windowSize[1], 0);
   }
 
   _updateViewport = true;
@@ -214,10 +226,16 @@ float OGLApplication::getWindowRatio() {
   return float(_windowSize[0]) / float(_windowSize[1]);
 }
 
-void OGLApplication::mouseMoved(GLFWwindow * window, double x, double y) {
+void OGLApplication::mouseMoved(GLFWwindow* window, double x, double y) {
   cout << "[INFO] : mouseMoved to <" << x << "," << y << ">" << endl;
 }
 
-void OGLApplication::handleKeyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  cout << "[INFO] : keyboard event, key = " << key << ", scancode = " << scancode << ", action = " << action << ", mods = " << mods << endl;
+void OGLApplication::handleKeyboardEvent(GLFWwindow* window,
+                                         int key,
+                                         int scancode,
+                                         int action,
+                                         int mods) {
+  cout << "[INFO] : keyboard event, key = " << key
+       << ", scancode = " << scancode << ", action = " << action
+       << ", mods = " << mods << endl;
 }

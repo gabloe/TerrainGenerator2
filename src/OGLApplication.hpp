@@ -12,14 +12,14 @@
 #ifndef OPENGL_CMAKE_SKELETON_OGLAPPLICATION_HPP
 #define OPENGL_CMAKE_SKELETON_OGLAPPLICATION_HPP
 
-#include <string>
-#include <map>
 #include <array>
 #include <functional>
+#include <map>
+#include <string>
 
 // OGL imports
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <glfw/glfw3.h>
 
 struct GLFWwindow;
 
@@ -73,9 +73,9 @@ class OGLApplication {
   float _deltaTime;
 
   // Dimensions and positioning of window:
-  std::array<int, 2> _windowPosition  {0, 0};
-  std::array<int, 2> _windowSize      {0, 0};
-  std::array<int, 2> _viewportSize    {0, 0};
+  std::array<int, 2> _windowPosition{0, 0};
+  std::array<int, 2> _windowSize{0, 0};
+  std::array<int, 2> _viewportSize{0, 0};
 
   // Screen
   GLFWmonitor* _primaryMonitor;

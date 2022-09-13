@@ -12,7 +12,7 @@
 #define OPENGL_CMAKE_SKELETON_SHADER_HPP
 
 #define GLM_FORCE_RADIANS
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <initializer_list>
 #include <map>

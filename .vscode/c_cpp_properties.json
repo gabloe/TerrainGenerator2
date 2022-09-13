@@ -4,10 +4,8 @@
             "name": "Windows",
             "includePath": [
                 "${workspaceFolder}/lib/assimp/include",
-                "${workspaceFolder}/lib/assimp/contrib",
                 "${workspaceFolder}/lib/glew/include",
                 "${workspaceFolder}/lib/glfw/include",
-                "${workspaceFolder}/lib/glfw/deps",
                 "${workspaceFolder}/lib/glm/",
                 "${workspaceFolder}/lib/",
                 "${workspaceFolder}/src/",
