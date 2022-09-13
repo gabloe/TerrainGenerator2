@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <stb/stb_image.h>
+
 #include <string>
 
 namespace models {
@@ -36,8 +38,8 @@ class Texture {
 
       stbi_image_free(data);
     } else {
-      std::cout << "Texture failed to load at path: " << path << std::endl;
       stbi_image_free(data);
+      throw std::string{"Texture failed to load at path: "} + path;
     }
 
     return textureID;
