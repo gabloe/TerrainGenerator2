@@ -3,13 +3,16 @@
 #include <ResourceManager.hpp>
 #include <Texture.hpp>
 
-#include "../lib/assimp/contrib/stb/stb_image.h"
 #include <glad/glad.h>
 #include <string>
 
+// This should expose stbi_load and stbi_image_free
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 using namespace models;
 
-unsigned int Texture::Load(std::string path) {
+unsigned int Load(std::string path) {
   unsigned int textureID;
   glGenTextures(1, &textureID);
 

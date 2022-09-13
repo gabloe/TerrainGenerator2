@@ -9,8 +9,10 @@
                 "${workspaceFolder}/lib/glfw/include",
                 "${workspaceFolder}/lib/glfw/deps",
                 "${workspaceFolder}/lib/glm/",
+                "${workspaceFolder}/lib/",
                 "${workspaceFolder}/src/",
-                "${workspaceFolder}/**"            ],
+                "${workspaceFolder}/**"
+            ],
             "defines": [],
             "cStandard": "c17",
             "cppStandard": "c++17"

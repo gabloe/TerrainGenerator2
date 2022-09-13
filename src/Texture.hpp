@@ -5,7 +5,6 @@
 namespace models {
 class Texture {
  private:
-  static unsigned int Load(std::string path);
   std::string type;
   unsigned int id;
   std::string path;
