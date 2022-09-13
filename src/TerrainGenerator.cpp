@@ -15,7 +15,7 @@
 #include <iostream>
 #include <vector>
 
-#include "asset.hpp"
+#include <asset.hpp>
 #include "glError.hpp"
 
 #include <assimp/Importer.hpp>
@@ -108,10 +108,11 @@ TerrainGenerator::TerrainGenerator()
       !scene->mRootNode)  {
         throw "Could not read the model file";
     }
+    auto mesh = scene->mMeshes[0];
 
     std::cout << "Mesh count: " << scene->mNumMeshes << std::endl;
+    std::cout << "Mesh[0].HasNormals() = " << mesh->HasNormals() << std::endl;
     
-    auto mesh = scene->mMeshes[0];
     for (auto i = 0; i < mesh->mNumVertices; i++) {
       VertexType vert;
       vert.position.x = mesh->mVertices[i].x;
@@ -123,6 +124,8 @@ TerrainGenerator::TerrainGenerator()
         vert.normal.y = mesh->mNormals[i].y;
         vert.normal.z = mesh->mNormals[i].z;
       }
+
+      vert.color.x = 1.0;
 
       vertices.push_back(vert);
     }
@@ -224,11 +227,7 @@ void TerrainGenerator::loop() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
   glCheckError(__FILE__, __LINE__);
-  glDrawElements(GL_TRIANGLES,         // mode
-                 size * size * 2 * 3,  // count
-                 GL_UNSIGNED_INT,      // type
-                 NULL                  // element array buffer offset
-  );
+  glDrawElements(GL_TRIANGLES, 2976, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
 
