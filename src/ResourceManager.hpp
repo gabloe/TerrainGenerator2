@@ -4,16 +4,28 @@
 
 #include <vector>
 
-namespace Resources {
+namespace resources {
 class ResourceManager {
  private:
   std::vector<models::Texture> textures_loaded;
 
+  static ResourceManager manager;
+
  public:
-  Texture LoadTexture(std::string fileName) {
-    if (textures_loaded.contains(fileName)) {
-      return;
+  static ResourceManager& GetManager() { return manager; }
+
+  models::Texture LoadTexture(std::string path,
+                              aiTextureType type,
+                              std::string type) {
+    for (auto i = 0; i < textures_loaded.size(); i++) {
+      auto texture = textures_loaded[i];
+      if (texture.path == path) {
+        return texture;
+      }
     }
+
+    auto texture = models::Texture{path, type};
+    return texture;
   }
 };
 }  // namespace Resources
