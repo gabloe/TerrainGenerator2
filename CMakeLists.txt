@@ -2,17 +2,14 @@
 cmake_minimum_required (VERSION 3.1)
 project (terrain-generator)
 
+file(GLOB terrain-generator-code
+     "src/*.hpp"
+     "src/*.cpp"
+)
+
 # The main executable
 add_executable(terrain-generator
-  src/OGLApplication.cpp
-  src/OGLApplication.hpp
-  src/TerrainGenerator.cpp
-  src/TerrainGenerator.hpp
-  src/glError.hpp
-  src/glError.cpp
-  src/main.cpp
-  src/Shader.hpp
-  src/Shader.cpp
+  ${terrain-generator-code}
 )
 
 set_property(TARGET terrain-generator PROPERTY CXX_STANDARD 11)
