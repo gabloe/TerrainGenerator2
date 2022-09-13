@@ -16,3 +16,4 @@ addons:
       - libxinerama-dev
       - libxcursor-dev
       - libxi-dev
+      - libegl1-mesa-dev
