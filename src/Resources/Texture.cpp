@@ -1,4 +1,3 @@
-#pragma once
 
 #include <ResourceManager.hpp>
 #include <Texture.hpp>
