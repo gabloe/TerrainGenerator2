@@ -72,6 +72,11 @@
         "functional": "cpp",
         "iterator": "cpp",
         "utility": "cpp",
-        "__functional_03": "cpp"
+        "__functional_03": "cpp",
+        "xlocale": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp"
     }
 }

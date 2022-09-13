@@ -64,7 +64,6 @@ class ShaderProgram {
 
   // provide uniform location
   GLint uniform(const std::string& name);
-  GLint operator[](const std::string& name);
 
   // affect uniform
   void setUniform(const std::string& name, float x, float y, float z);
