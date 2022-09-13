@@ -27,7 +27,7 @@ struct VertexType {
 float constexpr Pi = 3.14159f;
 
 float heightMap(const glm::vec2 position) {
-  auto radius = (position.x * position.x + position.y * position.y);
+  auto radius = sqrt(position.x * position.x + position.y * position.y);
   if (radius > (2.0 * Pi)) {
       radius -= 2.0 * Pi;
   }
@@ -36,13 +36,18 @@ float heightMap(const glm::vec2 position) {
 }
 
 VertexType getHeightMap(const glm::vec2 position) {
-  const glm::vec2 dx(1.0, 0.0);
-  const glm::vec2 dy(0.0, 1.0);
+  constexpr float delta = 0.0001;
+  constexpr float delta_inverse = 1.0 / delta;
+  const glm::vec2 dx(delta, 0.0);
+  const glm::vec2 dy(0.0, delta);
 
   VertexType v;
   float h = heightMap(position);
-  float hx = 100.f * (heightMap(position + 0.01f * dx) - h);
-  float hy = 100.f * (heightMap(position + 0.01f * dy) - h);
+  // hx= (d/dx heightMap)(position)
+  float hx = delta_inverse * (heightMap(position + dx) - h);
+
+  // hy= (d/dy heightMap)(position)
+  float hy = delta_inverse * (heightMap(position + dy) - h);
 
   v.position = glm::vec3(position, h);
   v.normal = glm::normalize(glm::vec3(-hx, -hy, 1.0));
