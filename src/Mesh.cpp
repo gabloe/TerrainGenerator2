@@ -63,8 +63,8 @@ void Mesh::Load(const aiScene* scene, const aiMesh* mesh) {
 
     auto manager = resources::ResourceManager::GetManager();
 
-    std::vector<Texture> diffuseMaps =
-        manager.LoadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<Texture> diffuseMaps = manager.LoadTextures(
+        material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
     // 2. specular maps

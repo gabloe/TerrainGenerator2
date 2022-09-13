@@ -33,8 +33,8 @@ class Mesh {
   /// <summary>
   /// Load the Mesh from a file.
   /// </summary>
-  void Mesh::Load(const aiScene* scene, const aiMesh* mesh);
-  
+  void Load(const aiScene* scene, const aiMesh* mesh);
+
   /// <summary>
   /// Draw the mesh.
   /// </summary>
