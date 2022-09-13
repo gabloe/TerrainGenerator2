@@ -32,15 +32,13 @@ class Mesh {
   unsigned int VAO;
 
  public:
-  /// <summary>
-  /// Load the Mesh from a file.
-  /// </summary>
+  /// @brief Loads the mesh data from the scene and assimp mesh object.
+  /// @param scene The assimp scene object.
+  /// @param mesh The assimp mesh object.
   void Load(const aiScene* scene, const aiMesh* mesh);
 
-  /// <summary>
-  /// Draw the mesh.
-  /// </summary>
-  /// <param name="shader"></param>
+  /// @brief Draw the mesh to the screen.
+  /// @param shader The shader we want to use when drawing.
   void Draw(Shader& shader);
 };
 }  // namespace models
