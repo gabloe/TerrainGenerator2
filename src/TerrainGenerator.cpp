@@ -133,7 +133,7 @@ TerrainGenerator::TerrainGenerator()
   glBindVertexArray(0);
 
   // setup the camera
-  cameraPos = glm::vec3(0.0, 0.0, 3.0);
+  cameraPos = glm::vec3(10.0, 0.0, 3.0);
   cameraFront = glm::vec3(0.0f, -1.0f, 0.0f);
   cameraUp    = glm::vec3(0.0f, 0.0f,  1.0f);
   cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
