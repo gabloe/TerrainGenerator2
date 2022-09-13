@@ -26,7 +26,7 @@ OGLApplication& OGLApplication::getInstance() {
 }
 
 OGLApplication::OGLApplication()
-    : _state(stateReady), title("Terrain Generator") {
+    : _state(stateReady), _windowSize({r_width, r_height}), title("Terrain Generator") {
   currentApplication = this;
 
   cout << "[Info] GLFW initialisation" << endl;
@@ -44,7 +44,7 @@ OGLApplication::OGLApplication()
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   // create the window
-  _window = glfwCreateWindow(r_width, r_height, title.c_str(), NULL, NULL);
+  _window = glfwCreateWindow(_windowSize[0], _windowSize[1], title.c_str(), NULL, NULL);
   if (!_window) {
     glfwTerminate();
     throw std::runtime_error("Couldn't create a window");
@@ -94,11 +94,12 @@ OGLApplication::OGLApplication()
 
   // setup monitor
   _primaryMonitor = glfwGetPrimaryMonitor();
-  glfwGetWindowSize(_window, &_windowSize[0], &_windowSize[1]);
-  glfwGetWindowPos(_window, &_windowSize[0], &_windowSize[1]);
 
   // Find all possible video modes and store them for later use
   _enumerate_video_modes(_primaryMonitor);
+
+  glfwGetWindowSize(_window, &_windowSize[0], &_windowSize[1]);
+  glfwGetWindowPos(_window, &_windowPosition[0], &_windowPosition[1]);
 
   _updateViewport = true;
 }
