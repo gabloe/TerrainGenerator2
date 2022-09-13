@@ -1,10 +1,10 @@
 #version 330 core
 
-in vec3 camera;
 in vec3 position;
 in vec3 normal;
 in vec4 color;
 
+uniform vec3 camera;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
@@ -18,7 +18,7 @@ out vec3 cameraPos;
 void main(void)
 {
     fPosition = view * vec4(position,1.0);
-    fLightPosition = view * vec4(0.0,0.0,1.0,1.0);
+    fLightPosition = view * vec4(0.0,0.0,1.0,0.0);
     fNormal = vec3(view * vec4(normal,0.0));
 
     cameraPos = camera;
