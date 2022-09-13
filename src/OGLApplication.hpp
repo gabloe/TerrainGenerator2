@@ -69,16 +69,18 @@ class OGLApplication {
   float _time;
   float _deltaTime;
 
-  // Dimensions:
-  int _width, _height;
+  // Dimensions and positioning of window:
   std::array<int, 2> _windowPosition  {0, 0};
   std::array<int, 2> _windowSize      {0, 0};
   std::array<int, 2> _viewportSize    {0, 0};
 
   // Screen
-  GLFWmonitor* _primaryMonitor = NULL;
+  GLFWmonitor* _primaryMonitor;
   void _resize(int, int);
   bool _updateViewport = true;
+  const GLFWvidmode* _video_modes;
+  int _video_mode_count = 0;
+  void _enumerate_video_modes(GLFWmonitor*);
 
  protected:
   OGLApplication(const OGLApplication&){};

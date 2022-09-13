@@ -173,6 +173,9 @@ TerrainGenerator::TerrainGenerator()
   shaderProgram.setAttribute("color", 4, sizeof(VertexType),
                              offsetof(VertexType, color));
 
+  num_vertices = vertices.size();
+  num_indexes = index.size();
+
   // bind the ibo
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
@@ -180,10 +183,10 @@ TerrainGenerator::TerrainGenerator()
   glBindVertexArray(0);
 
   // setup the camera
-  cameraPos = glm::vec3(0.0, 0.0, 10.0);
-  cameraFront = glm::vec3(0.0f, -1.0f, 0.0f);
-  cameraUp    = glm::vec3(0.0f, 0.0f,  1.0f);
-  cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+  cameraPos       = glm::vec3(0.0, 0.0, 10.0);
+  cameraFront     = glm::vec3(0.0f, 1.0f, 0.0f);
+  cameraUp        = glm::vec3(0.0f, 0.0f,  1.0f);
+  cameraTarget    = glm::vec3(0.0f, 0.0f, 0.0f);
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
   std::cout << "OpenGL configured" << std::endl;
@@ -229,7 +232,7 @@ void TerrainGenerator::loop() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
   glCheckError(__FILE__, __LINE__);
-  glDrawElements(GL_TRIANGLES, 2976, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, num_vertices, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
 

@@ -93,7 +93,22 @@ OGLApplication::OGLApplication()
   _primaryMonitor = glfwGetPrimaryMonitor();
   glfwGetWindowSize(_window, &_windowSize[0], &_windowSize[1]);
   glfwGetWindowPos(_window, &_windowSize[0], &_windowSize[1]);
+
+  // Find all possible video modes and store them for later use
+  _enumerate_video_modes(_primaryMonitor);
+
   _updateViewport = true;
+}
+
+void OGLApplication::_enumerate_video_modes(GLFWmonitor* monitor) {
+  // get resolution of monitor
+  _video_modes = glfwGetVideoModes(monitor, &_video_mode_count);
+
+  std::cout << "[INFO] Start enumerating video modes" << std::endl;
+  for (int i = _video_mode_count - 1; i >= 0; --i) {
+    std::cout << _video_modes[i].width << " x " << _video_modes[i].height << ", " << _video_modes[i].redBits + _video_modes[i].blueBits + _video_modes[i].greenBits << " bit color, " << _video_modes[i].refreshRate << " hz" << std::endl;
+  }
+  std::cout << "[INFO] End enumerating video modes" << std::endl;
 }
 
 GLFWwindow* OGLApplication::getWindow() const {
@@ -169,17 +184,13 @@ void OGLApplication::setFullScreen(bool fullscreen) {
     // backup window position and window size
     glfwGetWindowPos(_window, &_windowPosition[0], &_windowPosition[1]);
     glfwGetWindowSize(_window, &_windowSize[0], &_windowSize[1]);
-    
-    // get resolution of monitor
-    const GLFWvidmode* mode = glfwGetVideoMode(_primaryMonitor);
 
-    cout << "setting fullsreen" << endl;
-    cout << "resolution: " << mode->width << "*" << mode->height << endl;
+    // Use the highest resolution possible
+    const GLFWvidmode mode = _video_modes[_video_mode_count-1];
 
     // switch to full screen
-    glfwSetWindowMonitor(_window, _primaryMonitor, 0, 0, mode->width, mode->height, 0);
+    glfwSetWindowMonitor(_window, _primaryMonitor, 0, 0, mode.width, mode.height, 0);
   } else {
-    cout << "unsetting fullsreen" << endl;
     // restore last window size and position
     glfwSetWindowMonitor(_window, NULL, _windowPosition[0], _windowPosition[1], _windowSize[0], _windowSize[1], 0);
   }
