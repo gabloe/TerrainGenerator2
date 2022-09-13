@@ -22,11 +22,13 @@ add_definitions(-DGLEW_STATIC)
 add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(lib/glew EXCLUDE_FROM_ALL)
 add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
+add_subdirectory(lib/assimp EXCLUDE_FROM_ALL)
 
 target_link_libraries(terrain-generator
   PRIVATE glfw
   PRIVATE libglew_static
   PRIVATE glm
+  PRIVATE assimp
 )
 
 configure_file(
