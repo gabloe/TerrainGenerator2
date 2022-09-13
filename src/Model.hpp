@@ -12,7 +12,8 @@ namespace models {
 class Model {
  private:
   std::vector<models::Mesh> meshes;
-  std::vector<Texture> textures_loaded;  // Unsure a texture is only loaded once.
+  std::vector<Texture>
+      textures_loaded;  // Unsure a texture is only loaded once.
 
  public:
   /// @brief Load the model from the provided file.
