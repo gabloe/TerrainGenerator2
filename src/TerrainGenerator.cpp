@@ -112,12 +112,14 @@ TerrainGenerator::TerrainGenerator()
 
     std::cout << "Mesh count: " << scene->mNumMeshes << std::endl;
     std::cout << "Mesh[0].HasNormals() = " << mesh->HasNormals() << std::endl;
+
+    float scale = 2.0;
     
     for (auto i = 0; i < mesh->mNumVertices; i++) {
       VertexType vert;
-      vert.position.x = mesh->mVertices[i].x;
-      vert.position.y = mesh->mVertices[i].y;
-      vert.position.z = mesh->mVertices[i].z;
+      vert.position.x = mesh->mVertices[i].x / scale;
+      vert.position.y = mesh->mVertices[i].y / scale;
+      vert.position.z = mesh->mVertices[i].z / scale;
 
       if (mesh->HasNormals()) {
         vert.normal.x = mesh->mNormals[i].x;
@@ -178,7 +180,7 @@ TerrainGenerator::TerrainGenerator()
   glBindVertexArray(0);
 
   // setup the camera
-  cameraPos = glm::vec3(10.0, 0.0, 3.0);
+  cameraPos = glm::vec3(20.0, 0.0, 3.0);
   cameraFront = glm::vec3(0.0f, -6.0f, 0.0f);
   cameraUp    = glm::vec3(0.0f, 0.0f,  1.0f);
   cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
