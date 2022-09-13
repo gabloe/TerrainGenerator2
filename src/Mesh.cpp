@@ -24,7 +24,7 @@ void Mesh::Load(const aiScene* scene, const aiMesh* mesh) {
       vert.normal.z = mesh->mNormals[i].z;
     }
 
-    if (mesh->mTextureCoords > 0) {
+    if (mesh->mTextureCoords[0]) {
       // a vertex can contain up to 8 different texture coordinates. We thus
       // make the assumption that we won't use models where a vertex can have
       // multiple texture coordinates so we always take the first set (0).
