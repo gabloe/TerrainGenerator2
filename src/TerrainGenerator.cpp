@@ -24,8 +24,14 @@ struct VertexType {
   glm::vec4 color;
 };
 
+float constexpr Pi = 3.14159f;
+
 float heightMap(const glm::vec2 position) {
-  auto radius = 10 * sqrt(position.x * position.x + position.y * position.y);
+  auto radius = (position.x * position.x + position.y * position.y);
+  if (radius > (2.0 * Pi)) {
+      radius -= 2.0 * Pi;
+  }
+
   return 2.0 * cos(radius) * cos(radius);
 }
 
@@ -145,11 +151,17 @@ void TerrainGenerator::loop() {
 
   // send uniforms
   shaderProgram.setUniform("camera", cameraPos);
-  shaderProgram.setUniform("model", model);
-  shaderProgram.setUniform("projection", projection);
-  shaderProgram.setUniform("view", view);
-
   glCheckError(__FILE__, __LINE__);
+
+  shaderProgram.setUniform("model", model);
+  glCheckError(__FILE__, __LINE__);
+
+  shaderProgram.setUniform("projection", projection);
+  glCheckError(__FILE__, __LINE__);
+
+  shaderProgram.setUniform("view", view);
+  glCheckError(__FILE__, __LINE__);
+
 
   glBindVertexArray(vao);
 
