@@ -2,6 +2,15 @@
 cmake_minimum_required (VERSION 3.1)
 project (terrain-generator)
 
+# Disable all exporters
+set(ASSIMP_NO_EXPORT TRUE)
+
+# Limit importers
+set(ASSIMP_IMPORTER_ENABLED TRUE)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT FALSE)
+set(ASSIMP_BUILD_COLLADA_IMPORTER TRUE)
+
+
 file(GLOB terrain-generator-code
      "src/*.hpp"
      "src/*.cpp"
