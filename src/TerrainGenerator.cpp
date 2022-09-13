@@ -20,6 +20,7 @@
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
 struct VertexType {
   glm::vec3 position;
@@ -60,19 +61,9 @@ VertexType getHeightMap(const glm::vec2 position) {
   return v;
 }
 
-TerrainGenerator::TerrainGenerator()
-    : OGLApplication(),
-      vertexShader(SHADER_DIR "/shader.vert", GL_VERTEX_SHADER),
-      fragmentShader(SHADER_DIR "/shader.frag", GL_FRAGMENT_SHADER),
-      shaderProgram({vertexShader, fragmentShader}) {
-  glCheckError(__FILE__, __LINE__);
-
-  // creation of the mesh ------------------------------------------------------
+void TerrainGenerator::Generate() {
   std::vector<VertexType> vertices;
   std::vector<GLuint> index;
-
-  Assimp::Importer importer;
-  auto scene = importer.ReadFile("resources/models/teapots.DAE", aiPostProcessSteps::aiProcess_ValidateDataStructure);
 
   for (int y = 0; y <= size; ++y)
     for (int x = 0; x <= size; ++x) {
@@ -94,6 +85,57 @@ TerrainGenerator::TerrainGenerator()
 
   std::cout << "vertices=" << vertices.size() << std::endl;
   std::cout << "index=" << index.size() << std::endl;
+}
+
+TerrainGenerator::TerrainGenerator()
+    : OGLApplication(),
+      vertexShader(SHADER_DIR "/shader.vert", GL_VERTEX_SHADER),
+      fragmentShader(SHADER_DIR "/shader.frag", GL_FRAGMENT_SHADER),
+      shaderProgram({vertexShader, fragmentShader}) {
+  glCheckError(__FILE__, __LINE__);
+
+  // creation of the mesh ------------------------------------------------------
+  std::vector<VertexType> vertices;
+  std::vector<GLuint> index;
+
+  Assimp::Importer importer;
+  const aiScene* scene =
+      importer.ReadFile("resources/models/teapots.DAE",
+                        aiPostProcessSteps::aiProcess_ValidateDataStructure |
+                            aiProcess_GenNormals);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+      !scene->mRootNode)  {
+        throw "Could not read the model file";
+    }
+
+    std::cout << "Mesh count: " << scene->mNumMeshes << std::endl;
+    
+    auto mesh = scene->mMeshes[0];
+    for (auto i = 0; i < mesh->mNumVertices; i++) {
+      VertexType vert;
+      vert.position.x = mesh->mVertices[i].x;
+      vert.position.y = mesh->mVertices[i].y;
+      vert.position.z = mesh->mVertices[i].z;
+
+      if (mesh->HasNormals()) {
+        vert.normal.x = mesh->mNormals[i].x;
+        vert.normal.y = mesh->mNormals[i].y;
+        vert.normal.z = mesh->mNormals[i].z;
+      }
+
+      vertices.push_back(vert);
+    }
+
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+      aiFace face = mesh->mFaces[i];
+      // retrieve all indices of the face and store them in the indices vector
+      for (unsigned int j = 0; j < face.mNumIndices; j++)
+        index.push_back(face.mIndices[j]);
+    }
+
+    std::cout << "vertices=" << vertices.size() << std::endl;
+    std::cout << "index=" << index.size() << std::endl;
 
   // creation of the vertex array buffer----------------------------------------
 
@@ -138,6 +180,8 @@ TerrainGenerator::TerrainGenerator()
   cameraUp    = glm::vec3(0.0f, 0.0f,  1.0f);
   cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+  std::cout << "OpenGL configured" << std::endl;
 }
 
 void TerrainGenerator::loop() {

@@ -62,6 +62,8 @@ class TerrainGenerator : public OGLApplication {
 
   // input handling
   void processInput(GLFWwindow *);
+
+  void Generate();
 };
 
 #endif  // OPENGL_CMAKE_TERRAINGENERATOR
