@@ -3,11 +3,14 @@
         {
             "name": "Windows",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/lib/",
+                "${workspaceFolder}/lib/assimp/include",
+                "${workspaceFolder}/lib/assimp/contrib",
+                "${workspaceFolder}/lib/glew/include",
+                "${workspaceFolder}/lib/glfw/include",
                 "${workspaceFolder}/lib/glfw/deps",
-                "${workspaceFolder}/src/"
-            ],
+                "${workspaceFolder}/lib/glm/",
+                "${workspaceFolder}/src/",
+                "${workspaceFolder}/**"            ],
             "defines": [],
             "cStandard": "c17",
             "cppStandard": "c++17"

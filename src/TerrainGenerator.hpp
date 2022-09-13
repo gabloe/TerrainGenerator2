@@ -1,3 +1,5 @@
+#pragma once
+
 /**
  * TerrainGenerator.hpp
  * Contributors:

@@ -9,3 +9,4 @@ CMakeCache.txt
 Debug
 x64
 *.user
+.vscode
