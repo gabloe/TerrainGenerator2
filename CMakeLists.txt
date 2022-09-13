@@ -45,7 +45,7 @@ set(ASSIMP_BUILD_COLLADA_IMPORTER TRUE)
 include_directories(src/includes lib/stb)
 
 file(GLOB terrain-generator-code
-     "src/*.hpp"
+     "src/**/*.hpp"
      "src/*.cpp"
      "src/**/*.cpp"
 )

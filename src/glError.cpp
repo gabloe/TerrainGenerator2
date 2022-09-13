@@ -6,7 +6,7 @@
  *      * MIT
  */
 
-#include "glError.hpp"
+#include <glError.hpp>
 
 #include <glad/glad.h>
 #include <iostream>

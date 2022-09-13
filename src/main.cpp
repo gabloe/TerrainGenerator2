@@ -6,7 +6,7 @@
  *      * MIT
  */
 
-#include "TerrainGenerator.hpp"
+#include <TerrainGenerator.hpp>
 
 int main(int argc, const char* argv[]) {
   TerrainGenerator app;

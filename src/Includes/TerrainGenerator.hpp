@@ -11,8 +11,8 @@
 #ifndef OPENGL_CMAKE_TERRAINGENERATOR
 #define OPENGL_CMAKE_TERRAINGENERATOR
 
-#include "OGLApplication.hpp"
-#include "Shader.hpp"
+#include <OGLApplication.hpp>
+#include <Shader.hpp>
 
 class TerrainGenerator : public OGLApplication {
  public:

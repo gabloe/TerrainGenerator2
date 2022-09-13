@@ -6,7 +6,7 @@
  *      * MIT
  */
 
-#include "TerrainGenerator.hpp"
+#include <TerrainGenerator.hpp>
 
 #include <glfw/glfw3.h>
 #include <glm/glm.hpp>
@@ -16,7 +16,7 @@
 #include <vector>
 
 #include <asset.hpp>
-#include "glError.hpp"
+#include <glError.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

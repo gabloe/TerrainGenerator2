@@ -6,7 +6,7 @@
  *      * MIT
  */
 
-#include "Shader.hpp"
+#include <Shader.hpp>
 
 #include <cstdlib>
 #include <fstream>

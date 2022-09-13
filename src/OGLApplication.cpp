@@ -6,7 +6,7 @@
  *      * MIT
  */
 
-#include "OGLApplication.hpp"
+#include <OGLApplication.hpp>
 
 #include <iostream>
 #include <stdexcept>
