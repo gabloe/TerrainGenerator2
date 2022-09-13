@@ -48,7 +48,8 @@ class TerrainGenerator : public OGLApplication {
   Shader fragmentShader;
   ShaderProgram shaderProgram;
 
-  // shader matrix uniform
+  // shader matrix uniforms, start with identity
+  glm::mat4 model = glm::mat4(1.0);
   glm::mat4 projection = glm::mat4(1.0);
   glm::mat4 view = glm::mat4(1.0);
 
