@@ -42,7 +42,7 @@ set(ASSIMP_NO_EXPORT TRUE)
 set(ASSIMP_IMPORTER_ENABLED TRUE)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT FALSE)
 set(ASSIMP_BUILD_COLLADA_IMPORTER TRUE)
-include_directories(src/includes lib/stb)
+include_directories(src/Includes lib/stb)
 
 file(GLOB terrain-generator-code
      "src/**/*.hpp"
