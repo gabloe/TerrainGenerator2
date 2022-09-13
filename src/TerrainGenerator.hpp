@@ -39,8 +39,8 @@ class TerrainGenerator : public OGLApplication {
   const int size = 1024;
 
   // Movement speed
-  const float running_speed = 1.0f;
-  const float walking_speed = 0.1f;
+  const float running_speed = 0.1f;
+  const float walking_speed = 0.01f;
   float speed = walking_speed;
 
   // shader
