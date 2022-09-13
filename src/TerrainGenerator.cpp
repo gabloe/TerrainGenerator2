@@ -18,6 +18,9 @@
 #include "asset.hpp"
 #include "glError.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
 struct VertexType {
   glm::vec3 position;
   glm::vec3 normal;
@@ -67,6 +70,9 @@ TerrainGenerator::TerrainGenerator()
   // creation of the mesh ------------------------------------------------------
   std::vector<VertexType> vertices;
   std::vector<GLuint> index;
+
+  Assimp::Importer importer;
+  auto scene = importer.ReadFile("resources/models/teapots.DAE", aiPostProcessSteps::aiProcess_ValidateDataStructure);
 
   for (int y = 0; y <= size; ++y)
     for (int x = 0; x <= size; ++x) {
