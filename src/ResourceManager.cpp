@@ -22,16 +22,15 @@ std::vector<models::Texture> ResourceManager::LoadTextures(
     mat->GetTexture(type, i, &str);
 
     for (auto i = 0; i < textures_loaded.size(); i++) {
-      auto texture = textures_loaded[i];
-      if (std::strcmp(texture.path.c_str(), str.C_Str()) == 0) {
-        result.push_back(texture);
+      if (std::strcmp(textures_loaded[i].Path().c_str(), str.C_Str()) == 0) {
+        result.push_back(textures_loaded[i]);
         found = true;
         break;
       }
     }
 
     if (!found) {
-      auto texture = models::Texture{typeName, type};
+      models::Texture texture{std::string{str.C_Str()}, typeName};
       this->textures_loaded.push_back(texture);
       result.push_back(texture);
     }

@@ -4,6 +4,8 @@
 #include <glm/vec3.hpp>
 #include <vector>
 
+#include <assimp/scene.h>
+
 #include <Shader.hpp>
 #include <Texture.hpp>
 

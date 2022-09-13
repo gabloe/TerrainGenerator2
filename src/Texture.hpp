@@ -6,12 +6,15 @@ namespace models {
 class Texture {
  private:
   static unsigned int Load(std::string path);
+  std::string type;
+  unsigned int id;
+  std::string path;
 
  public:
-  const std::string type;
-  const unsigned int id;
-  const std::string path;
+  std::string Type() const { return this->type; }
+  unsigned int Id() const { return this->id; }
+  std::string Path() const { return this->path; }
 
-  Texture(std::string path, std::string type);
+  Texture(std::string path, std::string typeName);
 };
 }  // namespace models

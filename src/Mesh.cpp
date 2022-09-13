@@ -96,7 +96,7 @@ void Mesh::Draw(Shader& shader) {
                     i);  // active proper texture unit before binding
     // retrieve texture number (the N in diffuse_textureN)
     std::string number;
-    std::string name = textures[i].type;
+    std::string name = textures[i].Type();
 
     if (name == "texture_diffuse")
       number = std::to_string(diffuseNr++);
@@ -111,7 +111,7 @@ void Mesh::Draw(Shader& shader) {
     glUniform1i(
         glGetUniformLocation(shader.getHandle(), (name + number).c_str()), i);
     // and finally bind the texture
-    glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    glBindTexture(GL_TEXTURE_2D, textures[i].Id());
   }
 
   // draw mesh

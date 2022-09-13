@@ -10,8 +10,6 @@ class ResourceManager {
  private:
   std::vector<models::Texture> textures_loaded;
 
-  static ResourceManager manager;
-
  public:
   static ResourceManager& GetManager();
 
