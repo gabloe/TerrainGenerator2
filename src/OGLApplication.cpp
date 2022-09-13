@@ -52,11 +52,9 @@ OGLApplication::OGLApplication()
 
   glfwMakeContextCurrent(_window);
 
-  cout << "[Info] GLAD initialisation" << endl;
-
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Could not load GLAD" << std::endl;
-    throw std::runtime_error("Couldn't init GLAD");
+    glfwTerminate();
+    throw std::runtime_error(string("Could initialize GLAD"));
   }
 
   // get version info
