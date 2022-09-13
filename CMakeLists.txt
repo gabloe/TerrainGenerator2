@@ -14,6 +14,7 @@ add_executable(terrain-generator
 
 set_property(TARGET terrain-generator PROPERTY CXX_STANDARD 11)
 target_compile_options(terrain-generator PRIVATE -Wall)
+include_directories(src)
 
 add_definitions(-DGLEW_STATIC)
 add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
