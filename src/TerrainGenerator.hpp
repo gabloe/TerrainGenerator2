@@ -28,7 +28,7 @@ class TerrainGenerator : public OGLApplication {
   float pitch = 0.0f;
   float fov = 45.0;
   float znear = 0.01f;
-  float zfar = 100.0f;
+  float zfar = 150.0f;
 
  protected:
   virtual void loop();
