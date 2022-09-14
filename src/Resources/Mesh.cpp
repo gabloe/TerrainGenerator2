@@ -8,6 +8,7 @@
 #include <ResourceManager.hpp>
 
 #include <iostream>
+#include <glError.hpp>
 
 using namespace models;
 
@@ -108,55 +109,78 @@ void Mesh::Load(const aiScene* scene,
 void Mesh::Setup() {
   // create buffers/arrays
   glGenVertexArrays(1, &VAO);
+  glCheckError(__FILE__, __LINE__);
   glGenBuffers(1, &VBO);
+  glCheckError(__FILE__, __LINE__);
   glGenBuffers(1, &EBO);
+  glCheckError(__FILE__, __LINE__);
 
   glBindVertexArray(VAO);
+  glCheckError(__FILE__, __LINE__);
+
   // load data into vertex buffers
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glCheckError(__FILE__, __LINE__);
+
   // A great thing about structs is that their memory layout is sequential for
   // all its items. The effect is that we can simply pass a pointer to the
   // struct and it translates perfectly to a glm::vec3/2 array which again
   // translates to 3/2 floats which translates to a byte array.
   glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexType),
                &vertices[0], GL_STATIC_DRAW);
+  glCheckError(__FILE__, __LINE__);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glCheckError(__FILE__, __LINE__);
+
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
                &indices[0], GL_STATIC_DRAW);
+  glCheckError(__FILE__, __LINE__);
 
   int idx = 0;
 
   // vertex Positions
   glEnableVertexAttribArray(0);
+  glCheckError(__FILE__, __LINE__);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)0);
+  glCheckError(__FILE__, __LINE__);
 
   // vertex normals
   glEnableVertexAttribArray(1);
+  glCheckError(__FILE__, __LINE__);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
                         (void*)offsetof(VertexType, Normal));
+  glCheckError(__FILE__, __LINE__);
 
   // vertex color
   glEnableVertexAttribArray(2);
+  glCheckError(__FILE__, __LINE__);
   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
                         (void*)offsetof(VertexType, Color));
+  glCheckError(__FILE__, __LINE__);
 
   // vertex texture coords
   glEnableVertexAttribArray(3);
+  glCheckError(__FILE__, __LINE__);
   glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexType),
                         (void*)offsetof(VertexType, TexCoords));
+  glCheckError(__FILE__, __LINE__);
 
   // vertex tangent
   glEnableVertexAttribArray(4);
+  glCheckError(__FILE__, __LINE__);
   glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
                         (void*)offsetof(VertexType, Tangent));
+  glCheckError(__FILE__, __LINE__);
 
   // vertex bitangent
   glEnableVertexAttribArray(5);
   glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
                         (void*)offsetof(VertexType, Bitangent));
+  glCheckError(__FILE__, __LINE__);
 
   glBindVertexArray(0);
+  glCheckError(__FILE__, __LINE__);
 }
 
 void Mesh::Draw(ShaderProgram& shader) const {
@@ -183,17 +207,26 @@ void Mesh::Draw(ShaderProgram& shader) const {
       number = std::to_string(heightNr++);  // transfer unsigned int to stream
 
     // now set the sampler to the correct texture unit
-    glUniform1i(
-        glGetUniformLocation(shader.getHandle(), (name + number).c_str()), i);
+    auto location =
+        glGetUniformLocation(shader.getHandle(), (name + number).c_str());
+    glCheckError(__FILE__, __LINE__);
+
+    glUniform1i(location, i);
+    glCheckError(__FILE__, __LINE__);
     // and finally bind the texture
     glBindTexture(GL_TEXTURE_2D, textures[i]->Id());
+    glCheckError(__FILE__, __LINE__);
   }
 
   // draw mesh
   glBindVertexArray(VAO);
+  glCheckError(__FILE__, __LINE__);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+  glCheckError(__FILE__, __LINE__);
   glBindVertexArray(0);
+  glCheckError(__FILE__, __LINE__);
 
   // always good practice to set everything back to defaults once configured.
   glActiveTexture(GL_TEXTURE0);
+  glCheckError(__FILE__, __LINE__);
 }
