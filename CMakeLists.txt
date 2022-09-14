@@ -35,13 +35,7 @@ if (GLEW_EGL AND UNIX)
 endif ()
 
 
-# Disable all exporters
-set(ASSIMP_NO_EXPORT TRUE)
-
-# Limit importers
-set(ASSIMP_IMPORTER_ENABLED TRUE)
-set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT FALSE)
-set(ASSIMP_BUILD_COLLADA_IMPORTER TRUE)
+#includes
 include_directories(src/Includes lib/stb)
 
 file(GLOB terrain-generator-code
@@ -61,7 +55,16 @@ target_compile_options(terrain-generator PRIVATE -Wall)
 add_definitions(-DGLEW_STATIC)
 add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
+
+
+# Disable all exporters
+OPTION(ASSIMP_NO_EXPORT "desiable exporters" TRUE)
+# Limit importers
+set(ASSIMP_IMPORTER_ENABLED TRUE)
+OPTION(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "Do not build all importers by default" FALSE)
+OPTION(ASSIMP_BUILD_COLLADA_IMPORTER "Build the Collada importers" TRUE)
 add_subdirectory(lib/assimp EXCLUDE_FROM_ALL)
+
 add_subdirectory(lib/glad EXCLUDE_FROM_ALL)
 
 target_link_libraries(terrain-generator

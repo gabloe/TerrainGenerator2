@@ -8,6 +8,8 @@
 #include <glad/glad.h>
 #include <string>
 
+#include <exception>
+#include <sstream>
 
 using namespace models;
 
@@ -26,6 +28,11 @@ unsigned int Load(std::string path) {
       format = GL_RGB;
     else if (nrComponents == 4)
       format = GL_RGBA;
+    else {
+      std::stringstream ss;
+      ss << "Unsupported format: " << nrComponents;
+      throw std::exception{ss.str().c_str()};
+    }
 
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
