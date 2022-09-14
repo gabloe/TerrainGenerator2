@@ -1,5 +1,6 @@
 // This should expose stbi_load and stbi_image_free
-
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
 #include <stb_image.h>
 
 #include <ResourceManager.hpp>
