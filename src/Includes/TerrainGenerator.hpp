@@ -12,7 +12,12 @@
 #define OPENGL_CMAKE_TERRAINGENERATOR
 
 #include <OGLApplication.hpp>
+
+#include <Model.hpp>
 #include <Shader.hpp>
+
+#include <memory>
+
 
 class TerrainGenerator : public OGLApplication {
  public:
@@ -22,6 +27,8 @@ class TerrainGenerator : public OGLApplication {
   glm::vec3 cameraUp;
   glm::vec3 cameraTarget;
   glm::vec3 cameraDirection;
+
+  std::vector<std::shared_ptr<models::Model>> models;
   bool firstMouse = true;
   float lastX = getWidth() / 2.0f;
   float lastY = getHeight() / 2.0f;

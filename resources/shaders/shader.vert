@@ -1,8 +1,9 @@
 #version 330 core
 
-in vec3 position;
-in vec3 normal;
-in vec4 color;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
+layout (location = 2) in vec3 color;
+layout (location = 3) in vec2 aTexCoords;
 
 uniform mat4 model;
 uniform mat4 projection;
@@ -19,7 +20,7 @@ void main(void)
     fLightPosition = view * vec4(0.0,0.0,1.0,0.0);
     fNormal = vec3(view * vec4(normal,0.0));
 
-    fColor = color;
+    fColor = vec4(color, 0.0);
     
     gl_Position = projection * fPosition * model;
 }

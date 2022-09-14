@@ -18,9 +18,11 @@
 #include <asset.hpp>
 #include <glError.hpp>
 
-#include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+
+#include <ResourceManager.hpp>
 
 struct VertexType {
   glm::vec3 position;
@@ -33,7 +35,7 @@ float constexpr Pi = 3.14159f;
 double heightMap(const glm::vec2 position) {
   auto radius = sqrt(position.x * position.x + position.y * position.y);
   if (radius > (2.0 * Pi)) {
-      radius -= 2.0 * Pi;
+    radius -= 2.0 * Pi;
   }
 
   return 2.0 * cos(radius) * cos(radius);
@@ -94,102 +96,18 @@ TerrainGenerator::TerrainGenerator()
       shaderProgram({vertexShader, fragmentShader}) {
   glCheckError(__FILE__, __LINE__);
 
-  // creation of the mesh ------------------------------------------------------
-  std::vector<VertexType> vertices;
-  std::vector<GLuint> index;
+  auto manager = resources::ResourceManager::GetManager();
+  std::string path{MODELS_DIR "/teapots.DAE"};
+  auto model = manager.LoadModel(path);
 
-  Assimp::Importer importer;
-  const aiScene* scene =
-      importer.ReadFile(MODELS_DIR "/teapots.DAE",
-                        aiPostProcessSteps::aiProcess_ValidateDataStructure |
-                            aiProcess_GenNormals);
-
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
-      !scene->mRootNode)  {
-        throw "Could not read the model file";
-    }
-    auto mesh = scene->mMeshes[0];
-
-    std::cout << "Mesh count: " << scene->mNumMeshes << std::endl;
-    std::cout << "Mesh[0].HasNormals() = " << mesh->HasNormals() << std::endl;
-
-    float scale = 2.0;
-    
-    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-      VertexType vert;
-      vert.position.x = mesh->mVertices[i].x / scale;
-      vert.position.y = mesh->mVertices[i].y / scale;
-      vert.position.z = mesh->mVertices[i].z / scale;
-
-      if (mesh->HasNormals()) {
-        vert.normal.x = mesh->mNormals[i].x;
-        vert.normal.y = mesh->mNormals[i].y;
-        vert.normal.z = mesh->mNormals[i].z;
-      }
-
-      vert.color.x = 1.0;
-
-      vertices.push_back(vert);
-    }
-
-    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-      aiFace face = mesh->mFaces[i];
-      // retrieve all indices of the face and store them in the indices vector
-      for (unsigned int j = 0; j < face.mNumIndices; j++)
-        index.push_back(face.mIndices[j]);
-    }
-
-    std::cout << "vertices=" << vertices.size() << std::endl;
-    std::cout << "index=" << index.size() << std::endl;
-
-  // creation of the vertex array buffer----------------------------------------
-
-  // vbo
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexType),
-               vertices.data(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // ibo
-  glGenBuffers(1, &ibo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, index.size() * sizeof(GLuint),
-               index.data(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-  // vao
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-
-  // bind vbo
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-  // map vbo to shader attributes
-  shaderProgram.setAttribute("position", 3, sizeof(VertexType),
-                             offsetof(VertexType, position));
-  shaderProgram.setAttribute("normal", 3, sizeof(VertexType),
-                             offsetof(VertexType, normal));
-  shaderProgram.setAttribute("color", 4, sizeof(VertexType),
-                             offsetof(VertexType, color));
-
-  num_vertices = vertices.size();
-  num_indexes = index.size();
-
-  // bind the ibo
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-  // vao end
-  glBindVertexArray(0);
+  models.push_back(model);
 
   // setup the camera
-  cameraPos       = glm::vec3(0.0, 0.0, 10.0);
-  cameraFront     = glm::vec3(0.0f, 1.0f, 0.0f);
-  cameraUp        = glm::vec3(0.0f, 0.0f,  1.0f);
-  cameraTarget    = glm::vec3(0.0f, 0.0f, 0.0f);
+  cameraPos = glm::vec3(0.0, 0.0, 10.0);
+  cameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
+  cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+  cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-  std::cout << "OpenGL configured" << std::endl;
 }
 
 void TerrainGenerator::loop() {
@@ -200,13 +118,14 @@ void TerrainGenerator::loop() {
   processInput(getWindow());
 
   // set matrix : projection + view
-  projection = glm::perspective(glm::radians(fov), getWindowRatio(), znear, zfar);  
+  projection =
+      glm::perspective(glm::radians(fov), getWindowRatio(), znear, zfar);
 
   // glm::lookAt(eye, center, up)
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
   // clear
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -225,31 +144,24 @@ void TerrainGenerator::loop() {
   shaderProgram.setUniform("view", view);
   glCheckError(__FILE__, __LINE__);
 
-  glBindVertexArray(vao);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-  glCheckError(__FILE__, __LINE__);
-  glDrawElements(GL_TRIANGLES, (GLsizei)num_vertices, GL_UNSIGNED_INT, 0);
-
-  glBindVertexArray(0);
+  for (size_t i = 0; i < this->models.size(); i++) {
+    this->models[i]->Draw(this->shaderProgram);
+  }
 
   shaderProgram.unuse();
 }
 
-void TerrainGenerator::mouseMoved(GLFWwindow * window, double x, double y) {
+void TerrainGenerator::mouseMoved(GLFWwindow* window, double x, double y) {
   float xpos = static_cast<float>(x);
   float ypos = static_cast<float>(y);
-  if (firstMouse)
-  {
-      lastX = xpos;
-      lastY = ypos;
-      firstMouse = false;
+  if (firstMouse) {
+    lastX = xpos;
+    lastY = ypos;
+    firstMouse = false;
   }
 
   float xoffset = xpos - lastX;
-  float yoffset = lastY - ypos; 
+  float yoffset = lastY - ypos;
   lastX = xpos;
   lastY = ypos;
 
@@ -257,13 +169,13 @@ void TerrainGenerator::mouseMoved(GLFWwindow * window, double x, double y) {
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
-  yaw   += xoffset;
+  yaw += xoffset;
   pitch += yoffset;
 
-  if(pitch > 89.0f)
-      pitch = 89.0f;
-  if(pitch < -89.0f)
-      pitch = -89.0f;
+  if (pitch > 89.0f)
+    pitch = 89.0f;
+  if (pitch < -89.0f)
+    pitch = -89.0f;
 
   glm::vec3 direction;
   direction.x = cos(glm::radians(yaw)) * -cos(glm::radians(pitch));
@@ -272,13 +184,14 @@ void TerrainGenerator::mouseMoved(GLFWwindow * window, double x, double y) {
   cameraFront = glm::normalize(direction);
 }
 
-void TerrainGenerator::handleKeyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  if (mods == GLFW_MOD_SHIFT)
-  {
+void TerrainGenerator::handleKeyboardEvent(GLFWwindow* window,
+                                           int key,
+                                           int scancode,
+                                           int action,
+                                           int mods) {
+  if (mods == GLFW_MOD_SHIFT) {
     speed = running_speed;
-  }
-  else
-  {
+  } else {
     speed = walking_speed;
   }
   if (key == GLFW_KEY_F && action == GLFW_PRESS) {

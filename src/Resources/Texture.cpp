@@ -12,6 +12,8 @@
 #include <exception>
 #include <sstream>
 
+#include <iostream>
+
 using namespace models;
 
 unsigned int Load(std::string path) {
@@ -50,6 +52,7 @@ unsigned int Load(std::string path) {
     stbi_image_free(data);
   } else {
     stbi_image_free(data);
+    std::cout << "Texture failed to load at path: " << path << std::endl;
     throw std::string{"Texture failed to load at path: "} + path;
   }
 
