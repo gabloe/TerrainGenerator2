@@ -87,20 +87,27 @@ OGLApplication::OGLApplication()
     throw std::runtime_error("Couldn't init GLFW");
   }
 
-  // setting the opengl version
-  int major = 4;
-  int minor = 3;
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
-#ifdef __APPLE__
+  // setting the required opengl hints
+  #ifdef __APPLE__
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+  #endif
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
-  // create the window
-  _window = glfwCreateWindow(_windowSize[0], _windowSize[1], title.c_str(),
-                             NULL, NULL);
+  for (const auto &version : opengl_versions) {
+    // test opengl versions from highest to lowest compatible to find one that is supported on this platform
+    cout << "Testing OpenGL " << version.major << "." << version.minor << endl;
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version.major);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version.minor);
+
+    // create the window
+    _window = glfwCreateWindow(_windowSize[0], _windowSize[1], title.c_str(),
+                              NULL, NULL);
+    if (_window) {
+      break;
+    }
+  }
   if (!_window) {
     glfwTerminate();
     throw std::runtime_error("Couldn't create a window");

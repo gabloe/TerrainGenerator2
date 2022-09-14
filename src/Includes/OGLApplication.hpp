@@ -16,10 +16,16 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <vector>
 
 // OGL imports
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+struct OpenGLVersion {
+  int major;
+  int minor;
+};
 
 struct GLFWwindow;
 
@@ -84,6 +90,9 @@ class OGLApplication {
   const GLFWvidmode* _video_modes;
   int _video_mode_count = 0;
   void _enumerate_video_modes(GLFWmonitor*);
+
+  // Try each version of opengl until one succeeds in initialization
+  std::vector<OpenGLVersion> opengl_versions {{4,3},{4,2},{4,1},{4,0},{3,9},{3,8},{3,7},{3,6},{3,5},{3,4},{3,3},{3,2}};
 
  protected:
   OGLApplication(const OGLApplication&){};
