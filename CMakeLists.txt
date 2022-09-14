@@ -2,7 +2,6 @@
 cmake_minimum_required (VERSION 3.1)
 project (terrain-generator)
 
-
 #
 # OpenGL is required.
 #
@@ -49,8 +48,8 @@ add_executable(terrain-generator
   ${terrain-generator-code}
 )
 
-set_property(TARGET terrain-generator PROPERTY CXX_STANDARD 11)
-target_compile_options(terrain-generator PRIVATE -Wall)
+set_property(TARGET terrain-generator PROPERTY CXX_STANDARD 17)
+target_compile_options(terrain-generator PRIVATE) #-Wall)
 
 add_definitions(-DGLEW_STATIC)
 add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)

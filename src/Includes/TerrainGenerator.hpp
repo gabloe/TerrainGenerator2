@@ -38,8 +38,8 @@ class TerrainGenerator : public OGLApplication {
 
  private:
   const int size = 1024;
-  int num_vertices;
-  int num_indexes;
+  size_t num_vertices;
+  size_t num_indexes;
 
   // Movement speed
   const float running_speed = 0.5f;

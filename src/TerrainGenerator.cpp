@@ -30,7 +30,7 @@ struct VertexType {
 
 float constexpr Pi = 3.14159f;
 
-float heightMap(const glm::vec2 position) {
+double heightMap(const glm::vec2 position) {
   auto radius = sqrt(position.x * position.x + position.y * position.y);
   if (radius > (2.0 * Pi)) {
       radius -= 2.0 * Pi;
@@ -40,23 +40,23 @@ float heightMap(const glm::vec2 position) {
 }
 
 VertexType getHeightMap(const glm::vec2 position) {
-  constexpr float delta = 0.0001;
-  constexpr float delta_inverse = 1.0 / delta;
+  constexpr double delta = 0.0001;
+  constexpr double delta_inverse = 1.0 / delta;
   const glm::vec2 dx(delta, 0.0);
   const glm::vec2 dy(0.0, delta);
 
   VertexType v;
-  float h = heightMap(position);
+  double h = heightMap(position);
   // hx= (d/dx heightMap)(position)
-  float hx = delta_inverse * (heightMap(position + dx) - h);
+  double hx = delta_inverse * (heightMap(position + dx) - h);
 
   // hy= (d/dy heightMap)(position)
-  float hy = delta_inverse * (heightMap(position + dy) - h);
+  double hy = delta_inverse * (heightMap(position + dy) - h);
 
   v.position = glm::vec3(position, h);
   v.normal = glm::normalize(glm::vec3(-hx, -hy, 1.0));
 
-  float c = sin(h * 5.f) * 0.5 + 0.5;
+  double c = sin(h * 5.f) * 0.5 + 0.5;
   v.color = glm::vec4(c, 1.0 - c, 1.0, 1.0);
   return v;
 }
@@ -115,7 +115,7 @@ TerrainGenerator::TerrainGenerator()
 
     float scale = 2.0;
     
-    for (auto i = 0; i < mesh->mNumVertices; i++) {
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
       VertexType vert;
       vert.position.x = mesh->mVertices[i].x / scale;
       vert.position.y = mesh->mVertices[i].y / scale;
@@ -232,7 +232,7 @@ void TerrainGenerator::loop() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
   glCheckError(__FILE__, __LINE__);
-  glDrawElements(GL_TRIANGLES, num_vertices, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, (GLsizei)num_vertices, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
 

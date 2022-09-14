@@ -12,7 +12,7 @@ using namespace models;
 void Mesh::Load(const aiScene* scene, const aiMesh* mesh) {
   float scale = 2.0;
 
-  for (auto i = 0; i < mesh->mNumVertices; i++) {
+  for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
     VertexType vert;
     vert.position.x = mesh->mVertices[i].x / scale;
     vert.position.y = mesh->mVertices[i].y / scale;
@@ -116,7 +116,7 @@ void Mesh::Draw(Shader& shader) {
 
   // draw mesh
   glBindVertexArray(VAO);
-  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 
   // always good practice to set everything back to defaults once configured.

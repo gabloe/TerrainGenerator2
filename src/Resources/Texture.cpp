@@ -32,7 +32,8 @@ unsigned int Load(std::string path) {
     else {
       std::stringstream ss;
       ss << "Unsupported format: " << nrComponents;
-      throw std::exception{ss.str().c_str()};
+      std::string message = ss.str();
+      throw std::exception{message.c_str()};
     }
 
     glBindTexture(GL_TEXTURE_2D, textureID);

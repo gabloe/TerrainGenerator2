@@ -15,7 +15,7 @@ std::vector<models::Texture> ResourceManager::LoadTextures(
     std::string typeName) {
   std::vector<models::Texture> result;
 
-  for (auto i = 0; i < mat->GetTextureCount(type); i++) {
+  for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     bool found = false;
     aiString str;
     mat->GetTexture(type, i, &str);

@@ -142,11 +142,11 @@ void OGLApplication::run() {
   // Make the window's context current
   glfwMakeContextCurrent(_window);
 
-  _time = glfwGetTime();
+  _time = (float)glfwGetTime();
 
   while (_state == stateRun) {
     // compute new time and delta time
-    float t = glfwGetTime();
+    float t = (float)glfwGetTime();
     _deltaTime = t - _time;
     _time = t;
 
