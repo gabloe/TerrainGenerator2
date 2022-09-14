@@ -225,7 +225,6 @@ void TerrainGenerator::loop() {
   shaderProgram.setUniform("view", view);
   glCheckError(__FILE__, __LINE__);
 
-
   glBindVertexArray(vao);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
