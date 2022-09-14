@@ -89,8 +89,8 @@ void TerrainGenerator::Generate() {
 
 TerrainGenerator::TerrainGenerator()
     : OGLApplication(),
-      vertexShader(SHADER_DIR "/shader.vert", GL_VERTEX_SHADER),
-      fragmentShader(SHADER_DIR "/shader.frag", GL_FRAGMENT_SHADER),
+      vertexShader(SHADERS_DIR "/shader.vert", GL_VERTEX_SHADER),
+      fragmentShader(SHADERS_DIR "/shader.frag", GL_FRAGMENT_SHADER),
       shaderProgram({vertexShader, fragmentShader}) {
   glCheckError(__FILE__, __LINE__);
 
@@ -100,7 +100,7 @@ TerrainGenerator::TerrainGenerator()
 
   Assimp::Importer importer;
   const aiScene* scene =
-      importer.ReadFile("resources/models/teapots.DAE",
+      importer.ReadFile(MODELS_DIR "/teapots.DAE",
                         aiPostProcessSteps::aiProcess_ValidateDataStructure |
                             aiProcess_GenNormals);
 
