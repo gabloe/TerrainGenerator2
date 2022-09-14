@@ -94,8 +94,6 @@ TerrainGenerator::TerrainGenerator()
       vertexShader(SHADERS_DIR "/shader.vert", GL_VERTEX_SHADER),
       fragmentShader(SHADERS_DIR "/shader.frag", GL_FRAGMENT_SHADER),
       shaderProgram({vertexShader, fragmentShader}) {
-  glCheckError(__FILE__, __LINE__);
-
   auto manager = resources::ResourceManager::GetManager();
   std::string path{MODELS_DIR "/teapots.DAE"};
   auto model = manager.LoadModel(path);
@@ -133,16 +131,9 @@ void TerrainGenerator::loop() {
 
   // send uniforms
   shaderProgram.setUniform("camera", cameraPos);
-  glCheckError(__FILE__, __LINE__);
-
   shaderProgram.setUniform("model", model);
-  glCheckError(__FILE__, __LINE__);
-
   shaderProgram.setUniform("projection", projection);
-  glCheckError(__FILE__, __LINE__);
-
   shaderProgram.setUniform("view", view);
-  glCheckError(__FILE__, __LINE__);
 
   for (size_t i = 0; i < this->models.size(); i++) {
     this->models[i]->Draw(this->shaderProgram);
