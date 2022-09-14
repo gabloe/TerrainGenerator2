@@ -37,7 +37,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene) {
     Mesh mesh;
     mesh.Load(scene, scene->mMeshes[i], this->path);
     this->meshes.push_back(mesh);
-    return;
   }
 
   for (unsigned int i = 0; i < node->mNumChildren; i++) {
