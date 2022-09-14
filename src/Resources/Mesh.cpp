@@ -104,6 +104,9 @@ void Mesh::Load(const aiScene* scene,
         material, aiTextureType_AMBIENT, "texture_height", relativePath);
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
   }
+
+  // set up the buffers
+  Setup();
 }
 
 void Mesh::Setup() {
@@ -163,6 +166,7 @@ void Mesh::Setup() {
                         (void*)offsetof(VertexType, Bitangent));
 
   glBindVertexArray(0);
+    glCheckError(__FILE__,__LINE__);
 }
 
 void Mesh::Draw(ShaderProgram& shader) const {
@@ -195,7 +199,7 @@ void Mesh::Draw(ShaderProgram& shader) const {
     glUniform1i(location, i);
       // and finally bind the texture
     glBindTexture(GL_TEXTURE_2D, textures[i]->Id());
-    }
+  }
 
   // draw mesh
   glBindVertexArray(VAO);

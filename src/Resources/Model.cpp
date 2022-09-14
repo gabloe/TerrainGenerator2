@@ -2,6 +2,7 @@
 #include <Model.hpp>
 
 #include <iostream>
+#include <glError.hpp>
 
 using namespace models;
 
@@ -26,7 +27,6 @@ void Model::Load(std::string fileName) {
 void Model::Draw(ShaderProgram& shader) const {
 //  std::cout << "Rendering model " << this->path << std::endl;
   for (unsigned int i = 0; i < meshes.size(); i++) {
-//    std::cout << "Rendering mesh" << i << std::endl;
     meshes[i].Draw(shader);
   }
 }
