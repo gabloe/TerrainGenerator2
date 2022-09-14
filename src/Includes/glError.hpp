@@ -18,4 +18,11 @@
 //      glCheckError(__FILE__,__LINE__);
 void glCheckError(const char* file, unsigned int line);
 
+#define CHECKED(__FUNC)               \
+  do {                                \
+    __FUNC;                           \
+    glCheckError(__FILE__, __LINE__); \
+                                      \
+  } while (false);
+
 #endif  // OPENGL_CMAKE_SKELETON_GLERROR_HPP

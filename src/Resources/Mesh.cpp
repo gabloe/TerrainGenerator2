@@ -7,8 +7,8 @@
 
 #include <ResourceManager.hpp>
 
-#include <iostream>
 #include <glError.hpp>
+#include <iostream>
 
 using namespace models;
 
@@ -108,56 +108,45 @@ void Mesh::Load(const aiScene* scene,
 
 void Mesh::Setup() {
   // create buffers/arrays
-  glGenVertexArrays(1, &VAO);
-  glCheckError(__FILE__, __LINE__);
-  glGenBuffers(1, &VBO);
-  glCheckError(__FILE__, __LINE__);
-  glGenBuffers(1, &EBO);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glGenVertexArrays(1, &VAO));
+  CHECKED(glGenBuffers(1, &VBO));
+  CHECKED(glGenBuffers(1, &EBO));
 
-  glBindVertexArray(VAO);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glBindVertexArray(VAO));
+  CHECKED(glCheckError(__FILE__, __LINE__));
 
   // load data into vertex buffers
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 
   // A great thing about structs is that their memory layout is sequential for
   // all its items. The effect is that we can simply pass a pointer to the
   // struct and it translates perfectly to a glm::vec3/2 array which again
   // translates to 3/2 floats which translates to a byte array.
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexType),
-               &vertices[0], GL_STATIC_DRAW);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexType),
+                       &vertices[0], GL_STATIC_DRAW));
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-               &indices[0], GL_STATIC_DRAW);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                       indices.size() * sizeof(unsigned int), &indices[0],
+                       GL_STATIC_DRAW));
 
   int idx = 0;
 
   // vertex Positions
-  glEnableVertexAttribArray(0);
-  glCheckError(__FILE__, __LINE__);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)0);
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glEnableVertexAttribArray(0));
+  CHECKED(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
+                                (void*)0));
 
   // vertex normals
-  glEnableVertexAttribArray(1);
-  glCheckError(__FILE__, __LINE__);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
-                        (void*)offsetof(VertexType, Normal));
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glEnableVertexAttribArray(1));
+  CHECKED(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
+                                (void*)offsetof(VertexType, Normal)));
 
   // vertex color
-  glEnableVertexAttribArray(2);
-  glCheckError(__FILE__, __LINE__);
-  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
-                        (void*)offsetof(VertexType, Color));
-  glCheckError(__FILE__, __LINE__);
+  CHECKED(glEnableVertexAttribArray(2));
+  CHECKED(glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
+                                (void*)offsetof(VertexType, Color)));
 
   // vertex texture coords
   glEnableVertexAttribArray(3);
