@@ -49,6 +49,7 @@ add_executable(terrain-generator
 )
 
 set_property(TARGET terrain-generator PROPERTY CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
 target_compile_options(terrain-generator PRIVATE) #-Wall)
 
 add_definitions(-DGLEW_STATIC)
