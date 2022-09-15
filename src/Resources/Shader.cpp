@@ -11,9 +11,10 @@
 #include <cstdlib>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 #include <stdexcept>
 #include <vector>
+
+#include <Logger.hpp>
 
 using namespace std;
 using namespace glm;
@@ -63,12 +64,11 @@ Shader::Shader(const std::string& filename, GLenum type) {
     char* log = new char[logsize + 1];
     glGetShaderInfoLog(handle, logsize, &logsize, log);
 
-    cout << "[Error] compilation error: " << filename << endl;
-    cout << log << endl;
+    logging::Logger::LogError("Compilation error: " + filename);
 
     exit(EXIT_FAILURE);
   } else {
-    cout << "[Info] Shader " << filename << " compiled successfully" << endl;
+    logging::Logger::LogInfo("Shader " + filename + " compiled successfully");
   }
 }
 
@@ -97,7 +97,7 @@ void ShaderProgram::link() {
   GLint result;
   glGetProgramiv(handle, GL_LINK_STATUS, &result);
   if (result != GL_TRUE) {
-    cout << "[Error] linkage error" << endl;
+    logging::Logger::LogError("Linkage error: ");
 
     GLsizei logsize = 0;
     glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &logsize);
@@ -105,7 +105,7 @@ void ShaderProgram::link() {
     char* log = new char[logsize];
     glGetProgramInfoLog(handle, logsize, &logsize, log);
 
-    cout << log << endl;
+    logging::Logger::LogInfo(log);
   }
 }
 
@@ -115,7 +115,8 @@ GLint ShaderProgram::uniform(const std::string& name) {
     // uniform that is not referenced
     GLint r = glGetUniformLocation(handle, name.c_str());
     if (r == GL_INVALID_OPERATION || r < 0)
-      cout << "[Error] uniform " << name << " doesn't exist in program" << endl;
+      logging::Logger::LogError("Uniform " + name +
+                                " does not exist in the program.");
     // add it anyways
     uniforms[name] = r;
 
@@ -127,7 +128,8 @@ GLint ShaderProgram::uniform(const std::string& name) {
 GLint ShaderProgram::attribute(const std::string& name) {
   GLint attrib = glGetAttribLocation(handle, name.c_str());
   if (attrib == GL_INVALID_OPERATION || attrib < 0)
-    cout << "[Error] Attribute " << name << " doesn't exist in program" << endl;
+    logging::Logger::LogError("Attribute " + name +
+                              " does not exist in the program.");
 
   return attrib;
 }

@@ -12,11 +12,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_operation.hpp>
-#include <iostream>
 #include <vector>
 
 #include <asset.hpp>
-#include <glError.hpp>
 
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -65,32 +63,6 @@ VertexType getHeightMap(const glm::vec2 position) {
   double c = sin(h * 5.f) * 0.5 + 0.5;
   v.color = glm::vec4(c, 1.0 - c, 1.0, 1.0);
   return v;
-}
-
-void TerrainGenerator::Generate() {
-  std::vector<VertexType> vertices;
-  std::vector<GLuint> index;
-
-  for (int y = 0; y <= size; ++y)
-    for (int x = 0; x <= size; ++x) {
-      float xx = (x - size / 2) * 0.1f;
-      float yy = (y - size / 2) * 0.1f;
-      vertices.push_back(getHeightMap({xx, yy}));
-    }
-
-  for (int y = 0; y < size; ++y)
-    for (int x = 0; x < size; ++x) {
-      index.push_back((x + 0) + (size + 1) * (y + 0));
-      index.push_back((x + 1) + (size + 1) * (y + 0));
-      index.push_back((x + 1) + (size + 1) * (y + 1));
-
-      index.push_back((x + 1) + (size + 1) * (y + 1));
-      index.push_back((x + 0) + (size + 1) * (y + 1));
-      index.push_back((x + 0) + (size + 1) * (y + 0));
-    }
-
-  std::cout << "vertices=" << vertices.size() << std::endl;
-  std::cout << "index=" << index.size() << std::endl;
 }
 
 TerrainGenerator::TerrainGenerator(std::string configPath)

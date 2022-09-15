@@ -8,10 +8,7 @@
 
 #include <OGLApplication.hpp>
 
-#include <iostream>
 #include <stdexcept>
-
-#include <glError.hpp>
 
 #include <Logger.hpp>
 
@@ -26,86 +23,7 @@ void APIENTRY glDebugOutput(GLenum source,
                             GLenum severity,
                             GLsizei length,
                             const char* message,
-                            const void* userParam) {
-  if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
-    return;  // ignore these non-significant error codes
-
-  std::cout << "---------------" << std::endl;
-  std::cout << "Debug message (" << id << "): " << message << std::endl;
-
-  switch (source) {
-    case GL_DEBUG_SOURCE_API:
-      std::cout << "Source: API";
-      break;
-    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-      std::cout << "Source: Window System";
-      break;
-    case GL_DEBUG_SOURCE_SHADER_COMPILER:
-      std::cout << "Source: Shader Compiler";
-      break;
-    case GL_DEBUG_SOURCE_THIRD_PARTY:
-      std::cout << "Source: Third Party";
-      break;
-    case GL_DEBUG_SOURCE_APPLICATION:
-      std::cout << "Source: Application";
-      break;
-    case GL_DEBUG_SOURCE_OTHER:
-      std::cout << "Source: Other";
-      break;
-  }
-  std::cout << std::endl;
-
-  switch (type) {
-    case GL_DEBUG_TYPE_ERROR:
-      std::cout << "Type: Error";
-      break;
-    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-      std::cout << "Type: Deprecated Behaviour";
-      break;
-    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-      std::cout << "Type: Undefined Behaviour";
-      break;
-    case GL_DEBUG_TYPE_PORTABILITY:
-      std::cout << "Type: Portability";
-      break;
-    case GL_DEBUG_TYPE_PERFORMANCE:
-      std::cout << "Type: Performance";
-      break;
-    case GL_DEBUG_TYPE_MARKER:
-      std::cout << "Type: Marker";
-      break;
-    case GL_DEBUG_TYPE_PUSH_GROUP:
-      std::cout << "Type: Push Group";
-      break;
-    case GL_DEBUG_TYPE_POP_GROUP:
-      std::cout << "Type: Pop Group";
-      break;
-    case GL_DEBUG_TYPE_OTHER:
-      std::cout << "Type: Other";
-      break;
-  }
-  std::cout << std::endl;
-
-  switch (severity) {
-    case GL_DEBUG_SEVERITY_HIGH:
-      std::cout << "Severity: High";
-      break;
-    case GL_DEBUG_SEVERITY_MEDIUM:
-      std::cout << "Severity: Medium";
-      break;
-    case GL_DEBUG_SEVERITY_LOW:
-      std::cout << "Severity: Low";
-      break;
-    case GL_DEBUG_SEVERITY_NOTIFICATION:
-      std::cout << "Severity: Notification";
-      break;
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  if (severity == GL_DEBUG_SEVERITY_HIGH)
-    exit(1);
-}
+                            const void* userParam);
 
 OGLApplication* currentApplication = NULL;
 
@@ -180,8 +98,10 @@ OGLApplication::OGLApplication()
   // get version info
   const GLubyte* renderer = glGetString(GL_RENDERER);
   const GLubyte* version = glGetString(GL_VERSION);
-  cout << "Renderer: " << renderer << endl;
-  cout << "OpenGL version supported " << version << endl;
+  logging::Logger::LogInfo(
+      "Renderer: " + std::string{reinterpret_cast<const char*>(renderer)});
+  logging::Logger::LogInfo(
+      "Renderer: " + std::string{reinterpret_cast<const char*>(renderer)});
 
   // opengl configuration
   glEnable(GL_DEPTH_TEST);  // enable depth-testing
@@ -228,16 +148,16 @@ void OGLApplication::_enumerate_video_modes(GLFWmonitor* monitor) {
   // get resolution of monitor
   _video_modes = glfwGetVideoModes(monitor, &_video_mode_count);
 
-  std::cout << "[INFO] Start enumerating video modes" << std::endl;
+  logging::Logger::LogInfo("Start enumerating video modes");
   for (int i = _video_mode_count - 1; i >= 0; --i) {
-    std::cout << _video_modes[i].width << " x " << _video_modes[i].height
-              << ", "
-              << _video_modes[i].redBits + _video_modes[i].blueBits +
-                     _video_modes[i].greenBits
-              << " bit color, " << _video_modes[i].refreshRate << " hz"
-              << std::endl;
+    logging::Logger::LogInfo(
+        std::to_string(_video_modes[i].width) + " x " +
+        std::to_string(_video_modes[i].height) + ", " +
+        std::to_string(_video_modes[i].redBits + _video_modes[i].blueBits +
+                       _video_modes[i].greenBits) +
+        " bit color, " + std::to_string(_video_modes[i].refreshRate) + " hz");
   }
-  std::cout << "[INFO] End enumerating video modes" << std::endl;
+  logging::Logger::LogInfo("End enumerating video modes");
 }
 
 GLFWwindow* OGLApplication::getWindow() const {
@@ -330,7 +250,7 @@ void OGLApplication::setFullScreen(bool fullscreen) {
 }
 
 void OGLApplication::loop() {
-  cout << "[INFO] : loop" << endl;
+  logging::Logger::LogInfo("Loop");
 }
 
 int OGLApplication::getWidth() {
@@ -346,7 +266,8 @@ float OGLApplication::getWindowRatio() {
 }
 
 void OGLApplication::mouseMoved(GLFWwindow* window, double x, double y) {
-  cout << "[INFO] : mouseMoved to <" << x << "," << y << ">" << endl;
+  logging::Logger::LogInfo("Mouse moved to <" + std::to_string(x) + "," +
+                           std::to_string(y) + ">");
 }
 
 void OGLApplication::handleKeyboardEvent(GLFWwindow* window,
@@ -354,7 +275,8 @@ void OGLApplication::handleKeyboardEvent(GLFWwindow* window,
                                          int scancode,
                                          int action,
                                          int mods) {
-  cout << "[INFO] : keyboard event, key = " << key
-       << ", scancode = " << scancode << ", action = " << action
-       << ", mods = " << mods << endl;
+  logging::Logger::LogInfo("Keyboard event, key = " + std::to_string(key) +
+                           ", scancode = " + std::to_string(scancode) +
+                           ", action = " + std::to_string(action) +
+                           ", mods = " + std::to_string(mods));
 }

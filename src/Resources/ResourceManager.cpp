@@ -1,4 +1,5 @@
 
+#include <Logger.hpp>
 #include <ResourceManager.hpp>
 
 using namespace resources;
@@ -6,7 +7,6 @@ using namespace resources;
 static ResourceManager manager;
 
 #include <filesystem>
-#include <iostream>
 #include <optional>
 
 ResourceManager& ResourceManager::GetManager() {
@@ -48,14 +48,15 @@ std::vector<std::shared_ptr<models::Texture>> ResourceManager::LoadTextures(
 }
 
 std::shared_ptr<models::Model> ResourceManager::LoadModel(std::string path) {
-  std::cout << "Loading model from " << path << std::endl;
+  logging::Logger::LogDebug("Loading model from " + path);
   auto ptr = this->models_loaded.find(path);
   if (ptr != this->models_loaded.end()) {
-    std::cout << "\tModel already loaded, returning cached value." << std::endl;
+    logging::Logger::LogDebug(
+        "\tModel already loaded, returning cached value.");
     return ptr->second;
   }
 
-  std::cout << "\tModel not loaded, loading." << std::endl;
+  logging::Logger::LogDebug("\tModel not loaded, loading.");
   std::shared_ptr<models::Model> result = std::make_shared<models::Model>();
   result->Load(path);
   this->models_loaded[path] = result;

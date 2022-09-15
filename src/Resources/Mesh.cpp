@@ -7,8 +7,6 @@
 
 #include <ResourceManager.hpp>
 
-#include <glError.hpp>
-
 #include <Logger.hpp>
 
 using namespace models;
@@ -188,7 +186,6 @@ void Mesh::Setup() {
                         (void*)offsetof(VertexType, Bitangent));
 
   glBindVertexArray(0);
-  glCheckError(__FILE__, __LINE__);
 }
 
 void Mesh::Draw(ShaderProgram& shader) const {

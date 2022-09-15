@@ -12,9 +12,7 @@
 #include <exception>
 #include <sstream>
 
-#include <iostream>
-
-#include <glError.hpp>
+#include <Logger.hpp>
 
 using namespace models;
 
@@ -41,26 +39,28 @@ unsigned int Load(std::string path) {
     }
 
     glBindTexture(GL_TEXTURE_2D, textureID);
-  
+
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                  GL_UNSIGNED_BYTE, data);
-  
+
     glGenerateMipmap(GL_TEXTURE_2D);
-  
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
-  
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  
+
     stbi_image_free(data);
   } else {
     stbi_image_free(data);
-    std::cout << "Texture failed to load at path: " << path << std::endl;
-    throw std::string{"Texture failed to load at path: "} + path;
+
+    std::string message = "Texture failed to load at path:" + path;
+    logging::Logger::LogError(message);
+    throw std::runtime_error{message};
   }
 
   return textureID;
