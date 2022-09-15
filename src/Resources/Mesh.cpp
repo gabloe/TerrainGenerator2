@@ -8,7 +8,8 @@
 #include <ResourceManager.hpp>
 
 #include <glError.hpp>
-#include <iostream>
+
+#include <Logger.hpp>
 
 using namespace models;
 
@@ -17,21 +18,26 @@ void Mesh::Load(const aiScene* scene,
                 std::optional<std::string> relativePath) {
   float scale = 2.0;
 
-  std::cout << "Mesh has " << mesh->mNumVertices << " vertices." << std::endl;
-  std::cout << "Mesh has normals: " << mesh->HasNormals() << std::endl;
-
   unsigned int color_channels = mesh->GetNumColorChannels();
-  std::cout << "Mesh contains " << color_channels << " color channels." << std::endl;
+
+  logging::Logger::LogDebug("Mesh has " + std::to_string(mesh->mNumVertices) +
+                            " vertices.");
+
+  logging::Logger::LogDebug(
+      "Mesh has normals: " + std::to_string(mesh->HasNormals()) + " vertices.");
+
+  logging::Logger::LogDebug("Mesh contains: " + std::to_string(color_channels) +
+                            " color channels.");
 
   int print = 0;
 
-  const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
+  const aiMaterial* mtl = scene->mMaterials[mesh->mMaterialIndex];
 
   for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
     double per_done = (100 * i) / mesh->mNumVertices;
 
     if (per_done == print) {
-      std::cout << per_done << "%" << std::endl;
+      logging::Logger::LogDebug(std::to_string(per_done) + "%");
       print += 5;
     }
 
@@ -70,7 +76,9 @@ void Mesh::Load(const aiScene* scene,
     }
 
     aiColor4D material_color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
-    if (AI_SUCCESS != aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) && mesh->HasVertexColors(0) && mesh->mColors[0]) {
+    if (AI_SUCCESS !=
+            aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) &&
+        mesh->HasVertexColors(0) && mesh->mColors[0]) {
       material_color = *mesh->mColors[0];
     }
 
@@ -82,7 +90,7 @@ void Mesh::Load(const aiScene* scene,
     vertices.push_back(vert);
   }
 
-  std::cout << "Scene HasMaterials: " << scene->HasMaterials() << std::endl;
+  logging::Logger::LogDebug("Scene HasMaterials: " + scene->HasMaterials());
   if (scene->HasMaterials()) {
     // TODO: Handle n > 1
     auto material = scene->mMaterials[0];
@@ -109,7 +117,7 @@ void Mesh::Load(const aiScene* scene,
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
   }
 
-  std::cout << "Mesh has " << mesh->mNumFaces << " faces." << std::endl;
+  logging::Logger::LogDebug("Mesh has " + std::to_string(mesh->mNumFaces) + " faces");
 
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     aiFace face = mesh->mFaces[i];
@@ -117,7 +125,9 @@ void Mesh::Load(const aiScene* scene,
     for (unsigned int j = 0; j < face.mNumIndices; j++)
       indices.push_back(face.mIndices[j]);
   }
-  std::cout << "Mesh has: " << indices.size() << " indices." << std::endl;
+
+  logging::Logger::LogDebug("Mesh has " + std::to_string(indices.size()) +
+                            " indices");
 
   // set up the buffers
   Setup();
@@ -139,30 +149,28 @@ void Mesh::Setup() {
   // struct and it translates perfectly to a glm::vec3/2 array which again
   // translates to 3/2 floats which translates to a byte array.
   glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexType),
-                       &vertices[0], GL_STATIC_DRAW);
+               &vertices[0], GL_STATIC_DRAW);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                       indices.size() * sizeof(unsigned int), &indices[0],
-                       GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+               &indices[0], GL_STATIC_DRAW);
 
   int idx = 0;
 
   // vertex Positions
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
-                                (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType), (void*)0);
 
   // vertex normals
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
-                                (void*)offsetof(VertexType, Normal));
+                        (void*)offsetof(VertexType, Normal));
 
   // vertex color
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexType),
-                                (void*)offsetof(VertexType, Color));
+                        (void*)offsetof(VertexType, Color));
 
   // vertex texture coords
   glEnableVertexAttribArray(3);
@@ -180,7 +188,7 @@ void Mesh::Setup() {
                         (void*)offsetof(VertexType, Bitangent));
 
   glBindVertexArray(0);
-    glCheckError(__FILE__,__LINE__);
+  glCheckError(__FILE__, __LINE__);
 }
 
 void Mesh::Draw(ShaderProgram& shader) const {
@@ -209,9 +217,9 @@ void Mesh::Draw(ShaderProgram& shader) const {
     // now set the sampler to the correct texture unit
     auto location =
         glGetUniformLocation(shader.getHandle(), (name + number).c_str());
-  
+
     glUniform1i(location, i);
-      // and finally bind the texture
+    // and finally bind the texture
     glBindTexture(GL_TEXTURE_2D, textures[i]->Id());
   }
 

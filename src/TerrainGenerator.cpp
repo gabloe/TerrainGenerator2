@@ -26,6 +26,8 @@
 
 #include <ConfigReader.hpp>
 
+#include <Logger.hpp>
+
 struct VertexType {
   glm::vec3 position;
   glm::vec3 normal;
@@ -108,6 +110,15 @@ TerrainGenerator::TerrainGenerator(std::string configPath)
 
   if (reader.ContainsKey("fragmentShader")) {
     fragmentShaderPath = reader.ReadString("fragmentShader");
+  }
+
+  if (reader.ContainsKey("debugEnabled")) {
+    logging::Logger::GetInstance().SetEnabled(logging::DBG,
+                                              reader.ReadBool("debugEnabled"));
+  }
+  if (reader.ContainsKey("infoEnabled")) {
+    logging::Logger::GetInstance().SetEnabled(logging::INF,
+                                              reader.ReadBool("infoEnabled"));
   }
 
   Init();
