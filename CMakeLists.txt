@@ -57,7 +57,7 @@ ENDIF()
 
 target_compile_options(terrain-generator PRIVATE) #-Wall)
 
-add_definitions(-DGLEW_STATIC)
+add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 
 # Disable all exporters
 OPTION(ASSIMP_NO_EXPORT "desiable exporters" TRUE)
@@ -67,7 +67,6 @@ OPTION(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "Do not build all importers by defa
 OPTION(ASSIMP_BUILD_COLLADA_IMPORTER "Build the Collada importers" TRUE)
 add_subdirectory(lib/assimp EXCLUDE_FROM_ALL)
 
-add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(lib/glm EXCLUDE_FROM_ALL)
 add_subdirectory(lib/glad EXCLUDE_FROM_ALL)
 add_subdirectory(lib/json EXCLUDE_FROM_ALL)
@@ -80,11 +79,6 @@ target_link_libraries(terrain-generator
   ${OUR_LIBRARIES}
 )
 
-add_custom_target(copy_assets
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
-)
-add_dependencies(terrain-generator copy_assets)
-
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/asset.hpp.in
   ${CMAKE_CURRENT_BINARY_DIR}/src/asset.hpp
@@ -93,3 +87,8 @@ target_include_directories(terrain-generator
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src
 )
+
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
+)
+add_dependencies(terrain-generator copy_assets)
