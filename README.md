@@ -1,4 +1,4 @@
-TerrainGenerator [![Build Status](https://app.travis-ci.com/gabloe/TerrainGenerator.svg?branch=cmake)](https://app.travis-ci.com/gabloe/TerrainGenerator)
+TerrainGenerator [![Build Status](https://app.travis-ci.com/gabloe/TerrainGenerator.svg?branch=main)](https://app.travis-ci.com/gabloe/TerrainGenerator)
 =======================
 
 Built from the [OpenGL CMake Skeleton](https://github.com/ArthurSonzogni/OpenGL_CMake_Skeleton) template
