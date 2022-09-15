@@ -60,7 +60,7 @@ target_compile_options(terrain-generator PRIVATE) #-Wall)
 add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 
 # Disable all exporters
-OPTION(ASSIMP_NO_EXPORT "desiable exporters" TRUE)
+OPTION(ASSIMP_NO_EXPORT "disable exporters" TRUE)
 # Limit importers
 set(ASSIMP_IMPORTER_ENABLED TRUE)
 OPTION(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "Do not build all importers by default" FALSE)
