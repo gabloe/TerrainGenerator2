@@ -24,6 +24,8 @@
 
 #include <ResourceManager.hpp>
 
+#include <ConfigReader.hpp>
+
 struct VertexType {
   glm::vec3 position;
   glm::vec3 normal;
@@ -89,14 +91,46 @@ void TerrainGenerator::Generate() {
   std::cout << "index=" << index.size() << std::endl;
 }
 
+TerrainGenerator::TerrainGenerator(std::string configPath)
+    : OGLApplication(),
+      modelPath{MODELS_DIR "/tree.DAE"},
+      vertexShaderPath(SHADERS_DIR "/shader.vert"),
+      fragmentShaderPath(SHADERS_DIR "/shader.frag") {
+  config::ConfigReader reader{configPath};
+
+  if (reader.ContainsKey("model")) {
+    modelPath = reader.ReadString("model");
+  }
+
+  if (reader.ContainsKey("vertexShader")) {
+    vertexShaderPath = reader.ReadString("vertexShader");
+  }
+
+  if (reader.ContainsKey("fragmentShader")) {
+    fragmentShaderPath = reader.ReadString("fragmentShader");
+  }
+
+  Init();
+}
+
 TerrainGenerator::TerrainGenerator()
     : OGLApplication(),
-      vertexShader(SHADERS_DIR "/shader.vert", GL_VERTEX_SHADER),
-      fragmentShader(SHADERS_DIR "/shader.frag", GL_FRAGMENT_SHADER),
-      shaderProgram({vertexShader, fragmentShader}) {
+      modelPath{MODELS_DIR "/tree.DAE"},
+      vertexShaderPath(SHADERS_DIR "/shader.vert"),
+      fragmentShaderPath(SHADERS_DIR "/shader.frag") {
+  Init();
+}
+
+void TerrainGenerator::Init() {
   auto manager = resources::ResourceManager::GetManager();
-  std::string path{MODELS_DIR "/tree.DAE"};
-  auto model = manager.LoadModel(path);
+
+  // Create shaders
+  auto vertexShader = Shader(vertexShaderPath, GL_VERTEX_SHADER);
+  auto fragmentShader = Shader(fragmentShaderPath, GL_FRAGMENT_SHADER);
+  shaderProgram = std::make_unique<ShaderProgram>(
+      std::initializer_list<Shader>{vertexShader, fragmentShader});
+
+  auto model = manager.LoadModel(modelPath);
 
   models.push_back(model);
 
@@ -127,19 +161,17 @@ void TerrainGenerator::loop() {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  shaderProgram.use();
+  shaderProgram->use();
 
   // send uniforms
-  shaderProgram.setUniform("camera", cameraPos);
-  shaderProgram.setUniform("model", model);
-  shaderProgram.setUniform("projection", projection);
-  shaderProgram.setUniform("view", view);
+  shaderProgram->setUniform("camera", cameraPos);
+  shaderProgram->setUniform("model", model);
+  shaderProgram->setUniform("projection", projection);
+  shaderProgram->setUniform("view", view);
 
   for (size_t i = 0; i < this->models.size(); i++) {
-    this->models[i]->Draw(this->shaderProgram);
+    this->models[i]->Draw(*shaderProgram);
   }
-
-  shaderProgram.unuse();
 }
 
 void TerrainGenerator::mouseMoved(GLFWwindow* window, double x, double y) {

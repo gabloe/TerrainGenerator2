@@ -18,10 +18,10 @@
 
 #include <memory>
 
-
 class TerrainGenerator : public OGLApplication {
  public:
   TerrainGenerator();
+  TerrainGenerator(std::string configPath);
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
   glm::vec3 cameraUp;
@@ -44,6 +44,7 @@ class TerrainGenerator : public OGLApplication {
   virtual void handleKeyboardEvent(GLFWwindow*, int, int, int, int);
 
  private:
+  void Init();
   const int size = 1024;
   size_t num_vertices;
   size_t num_indexes;
@@ -53,10 +54,14 @@ class TerrainGenerator : public OGLApplication {
   const float walking_speed = 0.01f;
   float speed = walking_speed;
 
+  // Model
+  std::string modelPath;
+
   // shader
-  Shader vertexShader;
-  Shader fragmentShader;
-  ShaderProgram shaderProgram;
+  std::unique_ptr<ShaderProgram> shaderProgram;
+
+  std::string vertexShaderPath;
+  std::string fragmentShaderPath;
 
   // shader matrix uniforms, start with identity
   glm::mat4 model = glm::mat4(1.0);

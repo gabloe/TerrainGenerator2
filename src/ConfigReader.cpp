@@ -8,29 +8,44 @@ using json = nlohmann::json;
 
 using namespace config;
 
+void CheckKey(json& data, std::string key) {
+  if (!data.contains(key)) {
+    throw new std::runtime_error{"The key does not exist: " + key};
+  }
+}
+
 ConfigReader::ConfigReader(std::filesystem::path path) : _path{path} {}
 
 std::string ConfigReader::ReadString(std::string key) {
-  std::ifstream f("example.json");
+  std::ifstream f(this->_path.string());
   json data = json::parse(f);
-  if (data.contains(key)) {
-    return data[key];
-  }
-  return std::string{};
+  CheckKey(data, key);
+  return data[key];
 }
 
 int ConfigReader::ReadInt(std::string key) {
-  return 0;
+  std::ifstream f(this->_path.string());
+  json data = json::parse(f);
+  CheckKey(data, key);
+  return data[key];
 }
 
 bool ConfigReader::ReadBool(std::string key) {
-  return false;
+  std::ifstream f(this->_path.string());
+  json data = json::parse(f);
+  CheckKey(data, key);
+  return data[key];
 }
 
 double ConfigReader::ReadReal(std::string key) {
-  return 0.0;
+  std::ifstream f(this->_path.string());
+  json data = json::parse(f);
+  CheckKey(data, key);
+  return data[key];
 }
 
 bool ConfigReader::ContainsKey(std::string key) {
-  return true;
+  std::ifstream f(this->_path.string());
+  json data = json::parse(f);
+  return data.contains(key);
 }
