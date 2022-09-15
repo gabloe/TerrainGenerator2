@@ -37,16 +37,20 @@ TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
       modelPath{MODELS_DIR "/tree.DAE"},
       vertexShaderPath(SHADERS_DIR "/shader.vert"),
       fragmentShaderPath(SHADERS_DIR "/shader.frag") {
+
   if (configReader.ContainsKey("model")) {
-    modelPath = configReader.ReadString("model");
+    std::string modelName = configReader.ReadString("model");
+    modelPath = std::string(MODELS_DIR) + "/" + modelName;
   }
 
   if (configReader.ContainsKey("vertexShader")) {
-    vertexShaderPath = configReader.ReadString("vertexShader");
+    std::string vertexShaderName = configReader.ReadString("vertexShader");
+    vertexShaderPath = std::string(SHADERS_DIR) + "/" + vertexShaderName;
   }
 
   if (configReader.ContainsKey("fragmentShader")) {
-    fragmentShaderPath = configReader.ReadString("fragmentShader");
+    std::string fragmentShaderName = configReader.ReadString("fragmentShader");
+    fragmentShaderPath = std::string(SHADERS_DIR) + "/" + fragmentShaderName;
   }
 
   if (configReader.ContainsKey("debugLoggingEnabled")) {
