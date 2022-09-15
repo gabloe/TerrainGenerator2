@@ -80,6 +80,10 @@ target_link_libraries(terrain-generator
   ${OUR_LIBRARIES}
 )
 
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources
+)
+add_dependencies(terrain-generator copy_assets)
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/asset.hpp.in
