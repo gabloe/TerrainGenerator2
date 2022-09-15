@@ -95,15 +95,15 @@ TerrainGenerator::TerrainGenerator()
       fragmentShader(SHADERS_DIR "/shader.frag", GL_FRAGMENT_SHADER),
       shaderProgram({vertexShader, fragmentShader}) {
   auto manager = resources::ResourceManager::GetManager();
-  std::string path{MODELS_DIR "/teapots.DAE"};
+  std::string path{MODELS_DIR "/tree.DAE"};
   auto model = manager.LoadModel(path);
 
   models.push_back(model);
 
   // setup the camera
-  cameraPos = glm::vec3(0.0, 0.0, 10.0);
-  cameraFront = glm::vec3(0.0f, 1.0f, 0.0f);
-  cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+  cameraPos = glm::vec3(0.0, 0.0, 50.0);
+  cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
   cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
 }
@@ -169,9 +169,9 @@ void TerrainGenerator::mouseMoved(GLFWwindow* window, double x, double y) {
     pitch = -89.0f;
 
   glm::vec3 direction;
-  direction.x = cos(glm::radians(yaw)) * -cos(glm::radians(pitch));
-  direction.z = sin(glm::radians(pitch));
-  direction.y = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  direction.y = sin(glm::radians(pitch));
+  direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
   cameraFront = glm::normalize(direction);
 }
 

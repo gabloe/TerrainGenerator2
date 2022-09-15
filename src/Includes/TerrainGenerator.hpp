@@ -32,7 +32,7 @@ class TerrainGenerator : public OGLApplication {
   bool firstMouse = true;
   float lastX = getWidth() / 2.0f;
   float lastY = getHeight() / 2.0f;
-  float yaw = 90.0f;
+  float yaw = -90.0f;
   float pitch = 0.0f;
   float fov = 45.0;
   float znear = 0.01f;
