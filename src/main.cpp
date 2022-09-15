@@ -19,6 +19,14 @@ int main(int argc, const char* argv[]) {
 
   config::ConfigReader configReader{configPath};
 
+  // Check this setting first before logging configuration being loadded.
+  if (configReader.ContainsKey("infoLoggingEnabled")) {
+    logging::Logger::GetInstance().SetEnabled(
+        logging::INF, configReader.ReadBool("infoLoggingEnabled"));
+  }
+
+  logging::Logger::LogInfo("Config loaded from " + configPath);
+
   if (configReader.ContainsKey("debugLoggingEnabled")) {
     auto value = configReader.ReadBool("debugLoggingEnabled");
     logging::Logger::GetInstance().SetEnabled(
@@ -27,13 +35,6 @@ int main(int argc, const char* argv[]) {
         "Overriding default debug logging enabled value: " +
         std::to_string(value));
   }
-
-  if (configReader.ContainsKey("infoLoggingEnabled")) {
-    logging::Logger::GetInstance().SetEnabled(
-        logging::INF, configReader.ReadBool("infoLoggingEnabled"));
-  }
-
-  logging::Logger::LogInfo("Config loaded from " + configPath);
 
   TerrainGenerator app{configReader};
   app.run();
