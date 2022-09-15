@@ -6,6 +6,7 @@
                 "${workspaceFolder}/lib/assimp/include",
                 "${workspaceFolder}/lib/glfw/include",
                 "${workspaceFolder}/lib/glm/",
+                "${workspaceFolder}/lib/json/single_include",
                 "${workspaceFolder}/lib/",
                 "${workspaceFolder}/src/",
                 "${workspaceFolder}/**"
