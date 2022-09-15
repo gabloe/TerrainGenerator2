@@ -8,15 +8,18 @@
 
 #include <TerrainGenerator.hpp>
 
+#include <asset.hpp>
 #include <memory>
 
 int main(int argc, const char* argv[]) {
-  std::unique_ptr<TerrainGenerator> app;
+  std::string configPath = CONFIG_PATH;
   if (argc == 2) {
-    app = std::make_unique<TerrainGenerator>(std::string{argv[1]});
-  } else {
-    app = std::make_unique<TerrainGenerator>();
+    configPath = argv[1];
   }
-  app->run();
+
+  config::ConfigReader configReader{configPath};
+  TerrainGenerator app{configReader};
+  app.run();
+
   return 0;
 }

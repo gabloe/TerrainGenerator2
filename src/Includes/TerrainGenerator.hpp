@@ -17,11 +17,11 @@
 #include <Shader.hpp>
 
 #include <memory>
+#include <ConfigReader.hpp>
 
 class TerrainGenerator : public OGLApplication {
  public:
-  TerrainGenerator();
-  TerrainGenerator(std::string configPath);
+  TerrainGenerator(config::ConfigReader& configReader);
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
   glm::vec3 cameraUp;

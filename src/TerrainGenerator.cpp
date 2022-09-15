@@ -32,75 +32,33 @@ struct VertexType {
   glm::vec4 color;
 };
 
-float constexpr Pi = 3.14159f;
-
-double heightMap(const glm::vec2 position) {
-  auto radius = sqrt(position.x * position.x + position.y * position.y);
-  if (radius > (2.0 * Pi)) {
-    radius -= 2.0 * Pi;
-  }
-
-  return 2.0 * cos(radius) * cos(radius);
-}
-
-VertexType getHeightMap(const glm::vec2 position) {
-  constexpr double delta = 0.0001;
-  constexpr double delta_inverse = 1.0 / delta;
-  const glm::vec2 dx(delta, 0.0);
-  const glm::vec2 dy(0.0, delta);
-
-  VertexType v;
-  double h = heightMap(position);
-  // hx= (d/dx heightMap)(position)
-  double hx = delta_inverse * (heightMap(position + dx) - h);
-
-  // hy= (d/dy heightMap)(position)
-  double hy = delta_inverse * (heightMap(position + dy) - h);
-
-  v.position = glm::vec3(position, h);
-  v.normal = glm::normalize(glm::vec3(-hx, -hy, 1.0));
-
-  double c = sin(h * 5.f) * 0.5 + 0.5;
-  v.color = glm::vec4(c, 1.0 - c, 1.0, 1.0);
-  return v;
-}
-
-TerrainGenerator::TerrainGenerator(std::string configPath)
+TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
     : OGLApplication(),
       modelPath{MODELS_DIR "/tree.DAE"},
       vertexShaderPath(SHADERS_DIR "/shader.vert"),
       fragmentShaderPath(SHADERS_DIR "/shader.frag") {
-  config::ConfigReader reader{configPath};
 
-  if (reader.ContainsKey("model")) {
-    modelPath = reader.ReadString("model");
+  if (configReader.ContainsKey("model")) {
+    modelPath = configReader.ReadString("model");
   }
 
-  if (reader.ContainsKey("vertexShader")) {
-    vertexShaderPath = reader.ReadString("vertexShader");
+  if (configReader.ContainsKey("vertexShader")) {
+    vertexShaderPath = configReader.ReadString("vertexShader");
   }
 
-  if (reader.ContainsKey("fragmentShader")) {
-    fragmentShaderPath = reader.ReadString("fragmentShader");
+  if (configReader.ContainsKey("fragmentShader")) {
+    fragmentShaderPath = configReader.ReadString("fragmentShader");
   }
 
-  if (reader.ContainsKey("debugEnabled")) {
+  if (configReader.ContainsKey("debugEnabled")) {
     logging::Logger::GetInstance().SetEnabled(logging::DBG,
-                                              reader.ReadBool("debugEnabled"));
+                                              configReader.ReadBool("debugEnabled"));
   }
-  if (reader.ContainsKey("infoEnabled")) {
+  if (configReader.ContainsKey("infoEnabled")) {
     logging::Logger::GetInstance().SetEnabled(logging::INF,
-                                              reader.ReadBool("infoEnabled"));
+                                              configReader.ReadBool("infoEnabled"));
   }
 
-  Init();
-}
-
-TerrainGenerator::TerrainGenerator()
-    : OGLApplication(),
-      modelPath{MODELS_DIR "/tree.DAE"},
-      vertexShaderPath(SHADERS_DIR "/shader.vert"),
-      fragmentShaderPath(SHADERS_DIR "/shader.frag") {
   Init();
 }
 
