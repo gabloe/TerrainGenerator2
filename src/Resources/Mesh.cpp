@@ -20,9 +20,12 @@ void Mesh::Load(const aiScene* scene,
   std::cout << "Mesh has " << mesh->mNumVertices << " vertices." << std::endl;
   std::cout << "Mesh has normals: " << mesh->HasNormals() << std::endl;
 
+  unsigned int color_channels = mesh->GetNumColorChannels();
+  std::cout << "Mesh contains " << color_channels << " color channels." << std::endl;
+
   int print = 0;
 
-  for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+  for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
     double per_done = (100 * i) / mesh->mNumVertices;
 
     if (per_done == print) {
@@ -47,7 +50,12 @@ void Mesh::Load(const aiScene* scene,
       // multiple texture coordinates so we always take the first set (0).
       vert.TexCoords.x = mesh->mTextureCoords[0][i].x;
       vert.TexCoords.y = mesh->mTextureCoords[0][i].y;
+    } else {
+      vert.TexCoords.x = 0.0;
+      vert.TexCoords.y = 0.0;
+    }
 
+    if (mesh->HasTangentsAndBitangents()) {
       // tangent
       vert.Tangent.x = mesh->mTangents[i].x;
       vert.Tangent.y = mesh->mTangents[i].y;
@@ -57,26 +65,31 @@ void Mesh::Load(const aiScene* scene,
       vert.Bitangent.x = mesh->mBitangents[i].x;
       vert.Bitangent.y = mesh->mBitangents[i].y;
       vert.Bitangent.z = mesh->mBitangents[i].z;
-    } else {
-      vert.TexCoords.x = 0.0;
-      vert.TexCoords.y = 0.0;
     }
 
-    // Everyone is red, I don't care!
-    vert.Color.x = 1.0;
+    const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
+
+    aiColor4D color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
+    aiColor4D material_color;
+    if (AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color)) {
+      color = aiColor4D(material_color.r, material_color.g, material_color.b, material_color.a);
+    }
+
+    if (mesh->HasVertexColors(0) && mesh->mColors[0]) {
+      const aiColor4D pColr = mesh->mColors[0][i];
+      vert.Color.r = pColr.r;
+      vert.Color.g = pColr.g;
+      vert.Color.b = pColr.b;
+      vert.Color.w = pColr.a;
+    } else {
+      vert.Color.r = material_color.r;
+      vert.Color.g = material_color.g;
+      vert.Color.b = material_color.b;
+      vert.Color.w = material_color.a;
+    }
 
     vertices.push_back(vert);
   }
-
-  std::cout << "Mesh has " << mesh->mNumFaces << " faces." << std::endl;
-
-  for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-    aiFace face = mesh->mFaces[i];
-    // retrieve all indices of the face and store them in the indices vector
-    for (unsigned int j = 0; j < face.mNumIndices; j++)
-      indices.push_back(face.mIndices[j]);
-  }
-  std::cout << "Mesh has: " << indices.size() << " indices." << std::endl;
 
   std::cout << "Scene HasMaterials: " << scene->HasMaterials() << std::endl;
   if (scene->HasMaterials()) {
@@ -104,6 +117,16 @@ void Mesh::Load(const aiScene* scene,
         material, aiTextureType_AMBIENT, "texture_height", relativePath);
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
   }
+
+  std::cout << "Mesh has " << mesh->mNumFaces << " faces." << std::endl;
+
+  for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+    aiFace face = mesh->mFaces[i];
+    // retrieve all indices of the face and store them in the indices vector
+    for (unsigned int j = 0; j < face.mNumIndices; j++)
+      indices.push_back(face.mIndices[j]);
+  }
+  std::cout << "Mesh has: " << indices.size() << " indices." << std::endl;
 
   // set up the buffers
   Setup();

@@ -4,7 +4,6 @@
             "name": "Windows",
             "includePath": [
                 "${workspaceFolder}/lib/assimp/include",
-                "${workspaceFolder}/lib/glew/include",
                 "${workspaceFolder}/lib/glfw/include",
                 "${workspaceFolder}/lib/glm/",
                 "${workspaceFolder}/lib/",
@@ -18,6 +17,11 @@
         {
             "name": "Mac",
             "includePath": [
+                "${workspaceFolder}/lib/assimp/include",
+                "${workspaceFolder}/lib/glfw/include",
+                "${workspaceFolder}/lib/glm/",
+                "${workspaceFolder}/lib/",
+                "${workspaceFolder}/src/",
                 "${workspaceFolder}/**"
             ],
             "defines": [],
