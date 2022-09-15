@@ -37,14 +37,14 @@ void Model::Draw(ShaderProgram& shader) const {
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {
   for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
-    logging::Logger::LogDebug("Loading mesh " + i);
+    logging::Logger::LogDebug("Loading mesh " + std::to_string(i));
     Mesh mesh;
     mesh.Load(scene, scene->mMeshes[i], this->path);
     this->meshes.push_back(mesh);
   }
 
   for (unsigned int i = 0; i < node->mNumChildren; i++) {
-    logging::Logger::LogDebug("Processing child node " + i);
+    logging::Logger::LogDebug("Processing child node " + std::to_string(i));
     ProcessNode(node->mChildren[i], scene);
   }
 }
