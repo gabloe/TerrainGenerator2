@@ -25,6 +25,8 @@ void Mesh::Load(const aiScene* scene,
 
   int print = 0;
 
+  const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
+
   for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
     double per_done = (100 * i) / mesh->mNumVertices;
 
@@ -66,8 +68,6 @@ void Mesh::Load(const aiScene* scene,
       vert.Bitangent.y = mesh->mBitangents[i].y;
       vert.Bitangent.z = mesh->mBitangents[i].z;
     }
-
-    const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
 
     aiColor4D material_color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
     if (AI_SUCCESS != aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) && mesh->HasVertexColors(0) && mesh->mColors[0]) {
