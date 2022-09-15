@@ -69,24 +69,15 @@ void Mesh::Load(const aiScene* scene,
 
     const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
 
-    aiColor4D color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
-    aiColor4D material_color;
-    if (AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color)) {
-      color = aiColor4D(material_color.r, material_color.g, material_color.b, material_color.a);
+    aiColor4D material_color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
+    if (AI_SUCCESS != aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) && mesh->HasVertexColors(0) && mesh->mColors[0]) {
+      material_color = *mesh->mColors[0];
     }
 
-    if (mesh->HasVertexColors(0) && mesh->mColors[0]) {
-      const aiColor4D pColr = mesh->mColors[0][i];
-      vert.Color.r = pColr.r;
-      vert.Color.g = pColr.g;
-      vert.Color.b = pColr.b;
-      vert.Color.w = pColr.a;
-    } else {
-      vert.Color.r = material_color.r;
-      vert.Color.g = material_color.g;
-      vert.Color.b = material_color.b;
-      vert.Color.w = material_color.a;
-    }
+    vert.Color.r = material_color.r;
+    vert.Color.g = material_color.g;
+    vert.Color.b = material_color.b;
+    vert.Color.w = material_color.a;
 
     vertices.push_back(vert);
   }
