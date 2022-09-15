@@ -37,7 +37,6 @@ TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
       modelPath{MODELS_DIR "/tree.DAE"},
       vertexShaderPath(SHADERS_DIR "/shader.vert"),
       fragmentShaderPath(SHADERS_DIR "/shader.frag") {
-
   if (configReader.ContainsKey("model")) {
     modelPath = configReader.ReadString("model");
   }
@@ -50,13 +49,14 @@ TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
     fragmentShaderPath = configReader.ReadString("fragmentShader");
   }
 
-  if (configReader.ContainsKey("debugEnabled")) {
-    logging::Logger::GetInstance().SetEnabled(logging::DBG,
-                                              configReader.ReadBool("debugEnabled"));
+  if (configReader.ContainsKey("debugLoggingEnabled")) {
+    logging::Logger::GetInstance().SetEnabled(
+        logging::DBG, configReader.ReadBool("debugLoggingEnabled"));
   }
-  if (configReader.ContainsKey("infoEnabled")) {
-    logging::Logger::GetInstance().SetEnabled(logging::INF,
-                                              configReader.ReadBool("infoEnabled"));
+
+  if (configReader.ContainsKey("infoLoggingEnabled")) {
+    logging::Logger::GetInstance().SetEnabled(
+        logging::INF, configReader.ReadBool("infoLoggingEnabled"));
   }
 
   Init();
@@ -83,7 +83,7 @@ void TerrainGenerator::Init() {
   cameraDirection = glm::normalize(cameraPos - cameraTarget);
 }
 
-void TerrainGenerator::loop() {
+void TerrainGenerator::render() {
   // exit on window close button pressed
   if (glfwWindowShouldClose(getWindow()))
     exit();

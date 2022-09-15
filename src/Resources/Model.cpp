@@ -21,7 +21,7 @@ void Model::Load(std::string fileName) {
 
   this->path = fileName;
 
-  logging::Logger::LogDebug("processing root node");
+  logging::Logger::LogDebug("Processing root node");
   ProcessNode(scene->mRootNode, scene);
 }
 
@@ -35,14 +35,14 @@ void Model::Draw(ShaderProgram& shader) const {
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {
   for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
-    logging::Logger::LogDebug("loading mesh " + i);
+    logging::Logger::LogDebug("Loading mesh " + i);
     Mesh mesh;
     mesh.Load(scene, scene->mMeshes[i], this->path);
     this->meshes.push_back(mesh);
   }
 
   for (unsigned int i = 0; i < node->mNumChildren; i++) {
-    logging::Logger::LogDebug("processing child node " + i);
+    logging::Logger::LogDebug("Processing child node " + i);
     ProcessNode(node->mChildren[i], scene);
   }
 }

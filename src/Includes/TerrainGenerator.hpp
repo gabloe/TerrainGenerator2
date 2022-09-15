@@ -39,7 +39,7 @@ class TerrainGenerator : public OGLApplication {
   float zfar = 150.0f;
 
  protected:
-  virtual void loop();
+  virtual void render();
   virtual void mouseMoved(GLFWwindow*, double, double);
   virtual void handleKeyboardEvent(GLFWwindow*, int, int, int, int);
 

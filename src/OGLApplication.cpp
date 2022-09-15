@@ -40,7 +40,7 @@ OGLApplication::OGLApplication()
       title("Terrain Generator") {
   currentApplication = this;
 
-  logging::Logger::LogDebug("[Info] GLFW initialisation");
+  logging::Logger::LogDebug("GLFW initialisation");
 
   // initialize the GLFW library
   if (!glfwInit()) {
@@ -197,7 +197,7 @@ void OGLApplication::run() {
     }
 
     // execute the frame code
-    loop();
+    render();
 
     // Swap Front and Back buffers (double buffering)
     glfwSwapBuffers(_window);
@@ -249,8 +249,8 @@ void OGLApplication::setFullScreen(bool fullscreen) {
   _updateViewport = true;
 }
 
-void OGLApplication::loop() {
-  logging::Logger::LogInfo("Loop");
+void OGLApplication::render() {
+  logging::Logger::LogInfo("Render");
 }
 
 int OGLApplication::getWidth() {

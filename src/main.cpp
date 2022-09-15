@@ -7,9 +7,7 @@
  */
 
 #include <TerrainGenerator.hpp>
-
 #include <asset.hpp>
-#include <memory>
 
 int main(int argc, const char* argv[]) {
   std::string configPath = CONFIG_PATH;

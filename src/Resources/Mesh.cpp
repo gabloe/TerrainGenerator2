@@ -16,23 +16,45 @@ void Mesh::Load(const aiScene* scene,
                 std::optional<std::string> relativePath) {
   float scale = 2.0;
 
-  unsigned int color_channels = mesh->GetNumColorChannels();
+  const auto num_vertices = mesh->mNumVertices;
+  const auto color_channels = mesh->GetNumColorChannels();
+  const auto has_normals = mesh->HasNormals();
+  const auto has_tangents_and_bitangents = mesh->HasTangentsAndBitangents();
 
-  logging::Logger::LogDebug("Mesh has " + std::to_string(mesh->mNumVertices) +
+  logging::Logger::LogDebug("Mesh has " + std::to_string(num_vertices) +
                             " vertices.");
 
-  logging::Logger::LogDebug(
-      "Mesh has normals: " + std::to_string(mesh->HasNormals()) + " vertices.");
-
-  logging::Logger::LogDebug("Mesh contains: " + std::to_string(color_channels) +
+  logging::Logger::LogDebug("Mesh contains " + std::to_string(color_channels) +
                             " color channels.");
+
+  logging::Logger::LogDebug("Mesh has normals: " + std::to_string(has_normals));
+
+  logging::Logger::LogDebug("Mesh has tangents and bitangets: " +
+                            std::to_string(has_tangents_and_bitangents));
 
   int print = 0;
 
   const aiMaterial* mtl = scene->mMaterials[mesh->mMaterialIndex];
 
-  for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
-    double per_done = (100 * i) / mesh->mNumVertices;
+  aiColor4D material_color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
+  if (AI_SUCCESS !=
+          aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) &&
+      mesh->HasVertexColors(0) && mesh->mColors[0]) {
+    material_color = *mesh->mColors[0];
+
+    logging::Logger::LogDebug(
+        "Mesh does not have a diffuse color, using default: Red=" +
+        std::to_string(material_color.r) +
+        " Green=" + std::to_string(material_color.g) +
+        " Blue=" + std::to_string(material_color.b));
+  } else {
+    logging::Logger::LogDebug(
+        "Mesh has a diffuse color: Red=" + std::to_string(material_color.r) +
+        " Green=" + std::to_string(material_color.g) +
+        " Blue=" + std::to_string(material_color.b));
+  }
+  for (unsigned int i = 0; i < num_vertices; ++i) {
+    double per_done = (100 * i) / num_vertices;
 
     if (per_done == print) {
       logging::Logger::LogDebug(std::to_string(per_done) + "%");
@@ -44,7 +66,7 @@ void Mesh::Load(const aiScene* scene,
     vert.Position.y = mesh->mVertices[i].y / scale;
     vert.Position.z = mesh->mVertices[i].z / scale;
 
-    if (mesh->HasNormals()) {
+    if (has_normals) {
       vert.Normal.x = mesh->mNormals[i].x;
       vert.Normal.y = mesh->mNormals[i].y;
       vert.Normal.z = mesh->mNormals[i].z;
@@ -61,7 +83,7 @@ void Mesh::Load(const aiScene* scene,
       vert.TexCoords.y = 0.0;
     }
 
-    if (mesh->HasTangentsAndBitangents()) {
+    if (has_tangents_and_bitangents) {
       // tangent
       vert.Tangent.x = mesh->mTangents[i].x;
       vert.Tangent.y = mesh->mTangents[i].y;
@@ -73,13 +95,6 @@ void Mesh::Load(const aiScene* scene,
       vert.Bitangent.z = mesh->mBitangents[i].z;
     }
 
-    aiColor4D material_color = aiColor4D(1.0f, 1.0f, 1.0f, 1.0f);
-    if (AI_SUCCESS !=
-            aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &material_color) &&
-        mesh->HasVertexColors(0) && mesh->mColors[0]) {
-      material_color = *mesh->mColors[0];
-    }
-
     vert.Color.r = material_color.r;
     vert.Color.g = material_color.g;
     vert.Color.b = material_color.b;
@@ -88,7 +103,8 @@ void Mesh::Load(const aiScene* scene,
     vertices.push_back(vert);
   }
 
-  logging::Logger::LogDebug("Scene HasMaterials: " + scene->HasMaterials());
+  logging::Logger::LogDebug("Scene HasMaterials: " +
+                            std::to_string(scene->HasMaterials()));
   if (scene->HasMaterials()) {
     // TODO: Handle n > 1
     auto material = scene->mMaterials[0];
@@ -115,7 +131,8 @@ void Mesh::Load(const aiScene* scene,
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
   }
 
-  logging::Logger::LogDebug("Mesh has " + std::to_string(mesh->mNumFaces) + " faces");
+  logging::Logger::LogDebug("Mesh has " + std::to_string(mesh->mNumFaces) +
+                            " faces");
 
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     aiFace face = mesh->mFaces[i];

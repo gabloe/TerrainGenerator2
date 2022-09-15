@@ -37,7 +37,7 @@ struct GLFWwindow;
 ///   * getFrameDeltaTime()
 ///   * getWindowRatio()
 ///   * windowDimensionChanged()
-/// * let the user define the "loop" function.
+/// * let the user define the "render" function.
 class OGLApplication {
  public:
   OGLApplication();
@@ -99,7 +99,7 @@ class OGLApplication {
 
   std::string title;
 
-  virtual void loop();
+  virtual void render();
   virtual void mouseMoved(GLFWwindow*, double, double);
   virtual void handleKeyboardEvent(GLFWwindow*, int, int, int, int);
 };
