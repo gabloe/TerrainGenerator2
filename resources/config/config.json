@@ -1,4 +1,4 @@
 {
-    "model": "../resources/models/tree.DAE",
+    "model": "tree.DAE",
     "debugLoggingEnabled" : false
 }

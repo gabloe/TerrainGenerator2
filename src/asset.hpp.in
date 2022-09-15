@@ -1,5 +1,5 @@
 namespace asset {
-#define RESOURCE_DIR "@CMAKE_SOURCE_DIR@/resources"
+#define RESOURCE_DIR "../resources"
 #define SHADERS_DIR RESOURCE_DIR "/shaders"
 #define MODELS_DIR RESOURCE_DIR "/models"
 #define CONFIG_PATH RESOURCE_DIR "/config/config.json"

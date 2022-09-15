@@ -40,26 +40,21 @@ TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
   if (configReader.ContainsKey("model")) {
     std::string modelName = configReader.ReadString("model");
     modelPath = std::string(MODELS_DIR) + "/" + modelName;
+    logging::Logger::LogInfo("Overriding default model vale: " + modelPath);
   }
 
   if (configReader.ContainsKey("vertexShader")) {
     std::string vertexShaderName = configReader.ReadString("vertexShader");
     vertexShaderPath = std::string(SHADERS_DIR) + "/" + vertexShaderName;
+    logging::Logger::LogInfo("Overriding default vertex value: " +
+                             vertexShaderPath);
   }
 
   if (configReader.ContainsKey("fragmentShader")) {
     std::string fragmentShaderName = configReader.ReadString("fragmentShader");
     fragmentShaderPath = std::string(SHADERS_DIR) + "/" + fragmentShaderName;
-  }
-
-  if (configReader.ContainsKey("debugLoggingEnabled")) {
-    logging::Logger::GetInstance().SetEnabled(
-        logging::DBG, configReader.ReadBool("debugLoggingEnabled"));
-  }
-
-  if (configReader.ContainsKey("infoLoggingEnabled")) {
-    logging::Logger::GetInstance().SetEnabled(
-        logging::INF, configReader.ReadBool("infoLoggingEnabled"));
+    logging::Logger::LogInfo("Overriding default fragment value: " +
+                             fragmentShaderPath);
   }
 
   Init();

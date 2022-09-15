@@ -23,6 +23,8 @@ void Model::Load(std::string fileName) {
 
   logging::Logger::LogDebug("Processing root node");
   ProcessNode(scene->mRootNode, scene);
+
+  logging::Logger::LogInfo("Model " + fileName + " loaded successfully");
 }
 
 void Model::Draw(ShaderProgram& shader) const {

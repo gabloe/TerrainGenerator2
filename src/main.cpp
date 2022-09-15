@@ -33,6 +33,8 @@ int main(int argc, const char* argv[]) {
         logging::INF, configReader.ReadBool("infoLoggingEnabled"));
   }
 
+  logging::Logger::LogInfo("Config loaded from " + configPath);
+
   TerrainGenerator app{configReader};
   app.run();
 
