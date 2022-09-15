@@ -7,12 +7,12 @@
  */
 
 #include <TerrainGenerator.hpp>
-#include <asset.hpp>
 
 #include <Logger.hpp>
+#include <Asset.hpp>
 
 int main(int argc, const char* argv[]) {
-  std::string configPath = CONFIG_PATH;
+  std::string configPath = asset::Asset::CONFIG_PATH;
   if (argc == 2) {
     configPath = argv[1];
   }

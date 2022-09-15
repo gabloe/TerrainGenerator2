@@ -14,8 +14,6 @@
 #include <glm/gtx/matrix_operation.hpp>
 #include <vector>
 
-#include <asset.hpp>
-
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -25,6 +23,7 @@
 #include <ConfigReader.hpp>
 
 #include <Logger.hpp>
+#include <Asset.hpp>
 
 struct VertexType {
   glm::vec3 position;
@@ -34,25 +33,25 @@ struct VertexType {
 
 TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
     : OGLApplication(),
-      modelPath{MODELS_DIR "/tree.DAE"},
-      vertexShaderPath(SHADERS_DIR "/shader.vert"),
-      fragmentShaderPath(SHADERS_DIR "/shader.frag") {
+      modelPath(asset::Asset::MODELS_DIR + "/tree.DAE"),
+      vertexShaderPath(asset::Asset::SHADERS_DIR + "/shader.vert"),
+      fragmentShaderPath(asset::Asset::SHADERS_DIR + "/shader.frag") {
   if (configReader.ContainsKey("model")) {
     std::string modelName = configReader.ReadString("model");
-    modelPath = std::string(MODELS_DIR) + "/" + modelName;
+    modelPath = asset::Asset::MODELS_DIR + "/" + modelName;
     logging::Logger::LogInfo("Overriding default model vale: " + modelPath);
   }
 
   if (configReader.ContainsKey("vertexShader")) {
     std::string vertexShaderName = configReader.ReadString("vertexShader");
-    vertexShaderPath = std::string(SHADERS_DIR) + "/" + vertexShaderName;
+    vertexShaderPath = asset::Asset::SHADERS_DIR + "/" + vertexShaderName;
     logging::Logger::LogInfo("Overriding default vertex value: " +
                              vertexShaderPath);
   }
 
   if (configReader.ContainsKey("fragmentShader")) {
     std::string fragmentShaderName = configReader.ReadString("fragmentShader");
-    fragmentShaderPath = std::string(SHADERS_DIR) + "/" + fragmentShaderName;
+    fragmentShaderPath = asset::Asset::SHADERS_DIR + "/" + fragmentShaderName;
     logging::Logger::LogInfo("Overriding default fragment value: " +
                              fragmentShaderPath);
   }

@@ -61,6 +61,7 @@ add_subdirectory(lib/glfw EXCLUDE_FROM_ALL)
 
 # Disable all exporters
 OPTION(ASSIMP_NO_EXPORT "disable exporters" TRUE)
+
 # Limit importers
 set(ASSIMP_IMPORTER_ENABLED TRUE)
 OPTION(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "Do not build all importers by default" FALSE)
@@ -77,15 +78,6 @@ target_link_libraries(terrain-generator
   PRIVATE assimp
   PRIVATE glad
   ${OUR_LIBRARIES}
-)
-
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/asset.hpp.in
-  ${CMAKE_CURRENT_BINARY_DIR}/src/asset.hpp
-)
-target_include_directories(terrain-generator
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 
 add_custom_target(copy_assets
