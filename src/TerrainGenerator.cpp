@@ -37,7 +37,6 @@ TerrainGenerator::TerrainGenerator(config::ConfigReader& configReader)
       modelPath{MODELS_DIR "/tree.DAE"},
       vertexShaderPath(SHADERS_DIR "/shader.vert"),
       fragmentShaderPath(SHADERS_DIR "/shader.frag") {
-
   if (configReader.ContainsKey("model")) {
     std::string modelName = configReader.ReadString("model");
     modelPath = std::string(MODELS_DIR) + "/" + modelName;

@@ -33,7 +33,7 @@ class Logger {
  public:
   static Logger& GetInstance() { return globalInstance; }
 
-  void Log(LogLevel level, std::string msg);
+  void Log(LogLevel level, std::string msg) const;
 
   static void LogDebug(std::string msg);
   static void LogInfo(std::string msg);
@@ -41,5 +41,6 @@ class Logger {
   static void LogError(std::string msg);
 
   void SetEnabled(LogLevel level, bool value);
+  bool GetEnabled(LogLevel level) const;
 };
 }  // namespace logging

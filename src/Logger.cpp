@@ -7,12 +7,13 @@ using namespace logging;
 
 Logger Logger::globalInstance;
 
-void Logger::Log(LogLevel level, std::string msg) {
-  if (!enabled[level]) {
+void Logger::Log(LogLevel level, std::string msg) const {
+  if (!enabled.find(level)->second) {
     return;
   }
 
-  std::cout << "[" << stringMapping[level] << "] :" << msg << std::endl;
+  std::cout << "[" << stringMapping.find(level)->second << "] : " << msg
+            << std::endl;
 }
 
 void Logger::LogDebug(std::string msg) {
@@ -30,4 +31,8 @@ void Logger::LogError(std::string msg) {
 
 void Logger::SetEnabled(LogLevel level, bool value) {
   enabled[level] = value;
+}
+
+bool Logger::GetEnabled(LogLevel level) const {
+  return enabled.find(level)->second;
 }

@@ -101,7 +101,7 @@ OGLApplication::OGLApplication()
   logging::Logger::LogInfo(
       "Renderer: " + std::string{reinterpret_cast<const char*>(renderer)});
   logging::Logger::LogInfo(
-      "Renderer: " + std::string{reinterpret_cast<const char*>(renderer)});
+      "Version: " + std::string{reinterpret_cast<const char*>(version)});
 
   // opengl configuration
   glEnable(GL_DEPTH_TEST);  // enable depth-testing
@@ -148,16 +148,16 @@ void OGLApplication::_enumerate_video_modes(GLFWmonitor* monitor) {
   // get resolution of monitor
   _video_modes = glfwGetVideoModes(monitor, &_video_mode_count);
 
-  logging::Logger::LogInfo("Start enumerating video modes");
+  logging::Logger::LogDebug("Start enumerating video modes");
   for (int i = _video_mode_count - 1; i >= 0; --i) {
-    logging::Logger::LogInfo(
+    logging::Logger::LogDebug(
         std::to_string(_video_modes[i].width) + " x " +
         std::to_string(_video_modes[i].height) + ", " +
         std::to_string(_video_modes[i].redBits + _video_modes[i].blueBits +
                        _video_modes[i].greenBits) +
         " bit color, " + std::to_string(_video_modes[i].refreshRate) + " hz");
   }
-  logging::Logger::LogInfo("End enumerating video modes");
+  logging::Logger::LogDebug("End enumerating video modes");
 }
 
 GLFWwindow* OGLApplication::getWindow() const {
